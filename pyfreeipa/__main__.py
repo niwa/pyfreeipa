@@ -4,6 +4,7 @@
 import json
 import sys
 import pyfreeipa.configuration
+from pyfreeipa.api import Api
 
 CONFIG = pyfreeipa.configuration.Configuration()
 
@@ -14,12 +15,26 @@ def main():
         print(json.dumps(vars(CONFIG), indent=4, sort_keys=True))
         sys.exit(0)
 
+    # Define API session
+    ipaapi = Api(
+        host=CONFIG.ipaserver['host'],
+        username=CONFIG.ipaserver['user'],
+        password=CONFIG.ipaserver['password'],
+        port=CONFIG.ipaserver['port'],
+        verify_ssl=CONFIG.ipaserver['verify_ssl'],
+        verify_method=CONFIG.ipaserver['verify_method'],
+        verify_warnings=CONFIG.ipaserver['verify_warnings'],
+        dryrun=CONFIG.dryrun
+    )
+
     if CONFIG.command == 'connectiontest':
         print(
             "Test connection to %s" %
             CONFIG.ipaserver['host']
         )
-
+        response = ipaapi.login()
+        print(json.dumps(response, indent=4, sort_keys=True))
+        print(ipaapi.warnings)
     else:
         print("Does nothing")
 

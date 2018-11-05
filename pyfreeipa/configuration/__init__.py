@@ -25,7 +25,7 @@ class Configuration:
             'ipaserver': {
                 'host': 'ipaserver.example.org',
                 'user': 'username',
-                'passwd': None,
+                'password': None,
                 'port': 443,
                 'version': 2.228,
                 'verify_ssl': True,
