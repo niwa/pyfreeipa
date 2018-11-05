@@ -4,6 +4,7 @@ Process command line arguments and/or load configuration file
 import json
 import yaml
 import argparse
+import sys
 
 
 class Configuration:
@@ -17,10 +18,10 @@ class Configuration:
 
         @param      self  The object
         """
-        self.CONFIG = {}
 
         ARGS = self._do_args()
-        print(json.dumps(ARGS, indent=4, sort_keys=True))
+
+        self.command = ARGS.command
 
     @staticmethod
     def _do_args():
@@ -30,7 +31,10 @@ class Configuration:
         @return     { description_of_the_return_value }
         """
         # Parse command line arguments and modify config
-        parser = argparse.ArgumentParser(description='Python FreeIPA tools')
+        parser = argparse.ArgumentParser(
+            prog='pyfreeipa.py',
+            description='Python FreeIPA tools'
+        )
 
         # Command line arguments, the help value describes each argument's purpose
         parser.add_argument(
@@ -60,9 +64,19 @@ class Configuration:
         parser.add_argument(
             "-f",
             "--file",
-            default=None,
+            default='pyfreeipa.conf.yaml',
             dest='file',
             help="Specify a configuration file",
+        )
+
+        # Positional commands
+        parser.add_argument(
+            dest='command',
+            help='Command help',
+            type=str,
+            choices=[
+                'dumpconfig',
+            ]
         )
 
         return parser.parse_args()
