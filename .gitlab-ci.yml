@@ -1,14 +1,32 @@
-image: "python:3.5"
-
-before_script:
-  - python --version
-  - pip install virtualenv
 stages:
-  - build
-  - test
-build:
-  stage: build
-  script: cd schema && make && cd ../server && make
-test:
-  stage: test
-  script: ./ci-test.sh
+    - pylint
+    - deploy
+
+pylint:
+    image: python:3.7
+    stage: pylint
+    script:
+        - pip install -r requirements.txt
+        - pip install pylint anybadge pylint-exit --quiet
+        - pylint pyfreeipa --output-format=text || pylint-exit $? | tee pylint.txt
+        - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' pylint.txt)
+        - echo "Pylint score was $score"
+        - anybadge --value=$score --file=public/pylint.svg pylint
+    artifacts:
+        paths:
+            - public/pylint.svg
+    tags:
+        - docker
+
+# Gitlab pages service not yet configured
+#pages:
+#    stage: deploy
+#    script:
+#        - mkdir .public
+#        - cp -r * .public
+#        - mv .public public
+#    artifacts:
+#        paths:
+#            - public
+#    only:
+#        - master
