@@ -3,7 +3,7 @@
 """
 import requests
 import urllib
-import pathlib
+# import pathlib
 import json
 from typing import Union
 import urllib3
