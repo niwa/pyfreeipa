@@ -1,0 +1,14 @@
+image: "python:3.5"
+
+before_script:
+  - python --version
+  - pip install virtualenv
+stages:
+  - build
+  - test
+build:
+  stage: build
+  script: cd schema && make && cd ../server && make
+test:
+  stage: test
+  script: ./ci-test.sh
