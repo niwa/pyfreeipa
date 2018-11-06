@@ -33,8 +33,23 @@ def main():
             CONFIG.ipaserver['host']
         )
         response = ipaapi.login()
-        print(json.dumps(response, indent=4, sort_keys=True))
-        print(ipaapi.warnings)
+        if response.status_code != 200:
+            print(
+                'Failed to log %s in to %s' %
+                (
+                    CONFIG.ipaserver['user'],
+                    CONFIG.ipaserver['host']
+                )
+            )
+        else:
+            print(
+                'Successfully logged in as %s on %s' %
+                (
+                    CONFIG.ipaserver['user'],
+                    CONFIG.ipaserver['host']
+                )
+            )
+
     else:
         print("Does nothing")
 

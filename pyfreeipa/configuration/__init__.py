@@ -60,14 +60,14 @@ class Configuration:
             self.ipaserver['version'] = args.version  # pylint: disable=maybe-no-member
 
         # This one can be bool or str values
-        if args.verify_method:
+        if args.verify_method is not None:
             self.ipaserver['verify_method'] = args.verify_method  # pylint: disable=maybe-no-member
-        else:
-            self.ipaserver['verify_method'] = False  # pylint: disable=maybe-no-member
 
-        # Bool have default values override
-        self.ipaserver['verify_ssl'] = args.verify_ssl  # pylint: disable=maybe-no-member
-        self.ipaserver['verify_warnings'] = args.verify_warnings  # pylint: disable=maybe-no-member
+        if args.verify_ssl is not None:
+            self.ipaserver['verify_ssl'] = args.verify_ssl  # pylint: disable=maybe-no-member
+
+        if args.verify_warnings is not None:
+            self.ipaserver['verify_warnings'] = args.verify_warnings  # pylint: disable=maybe-no-member
 
         # If there's no config file, write one
         if not os.path.isfile(args.file):
@@ -175,7 +175,7 @@ class Configuration:
 
         parser.add_argument(
             '--verify_ssl',
-            default=True,
+            default=None,
             type=bool,
             dest='verify_ssl',
             help=(
@@ -186,7 +186,7 @@ class Configuration:
 
         parser.add_argument(
             '--verify_warnings',
-            default=True,
+            default=None,
             type=bool,
             dest='verify_warnings',
             help=(
@@ -197,7 +197,7 @@ class Configuration:
 
         parser.add_argument(
             '--verify_method',
-            default=True,
+            default=None,
             type=Union[bool, str],
             dest='verify_method',
             help=(

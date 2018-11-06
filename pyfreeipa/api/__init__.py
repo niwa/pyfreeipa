@@ -1,13 +1,14 @@
 """
 { item_description }
 """
-import requests
+# import sys
 import urllib
-# import pathlib
 import json
 from typing import Union
+import requests
+# import pathlib
 import urllib3
-import sys
+
 
 class Api(object):
     """
@@ -52,6 +53,11 @@ class Api(object):
         )
 
         if not self._verify_warnings:
+            reason = (
+                "TLS warnings from %s disabled" %
+                self._host
+            )
+            self.warnings.append(reason)
             urllib3.disable_warnings()
 
         self._session = requests.Session()
@@ -82,18 +88,18 @@ class Api(object):
             self,
             commandurl: type=str,
             data: type=dict,
-            headers: Union[None, dict]=None
+            headers: Union[None, dict]=None,
     ):
         if headers:
             response = self._session.post(
                 url=commandurl,
                 data=json.dumps(data),
-                headers=json.dumps(headers)
+                headers=headers
             )
         else:
             response = self._session.post(
                 url=commandurl,
-                data=json.dumps(data),
+                data=json.dumps(data)
             )
         return response
 
@@ -107,20 +113,16 @@ class Api(object):
             'password': self._password
         }
         headers = {
-            'referer': self._baseurl,
+            'referer': commandurl,
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'text/plain'
         }
-        try:
-            response = self._post(
-                commandurl=commandurl,
-                data=data,
-                headers=headers
-            )
-            return response
-
-        except Exception as e:
-            self.warnings.append(e)
+        response = self._session.post(
+            commandurl,
+            data=data,
+            headers=headers
+        )
+        return response
 
 
     def clearwarnings(self):
