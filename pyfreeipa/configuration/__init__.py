@@ -1,11 +1,11 @@
 """
 Process command line arguments and/or load configuration file
 """
-import yaml
 import argparse
 import sys
 import os.path
 from typing import Union
+import yaml
 
 
 class Configuration:
@@ -44,30 +44,31 @@ class Configuration:
                 self.__dict__.update(yaml.load(configfile))
 
         # Override configuration loaded from file with command line arguments
+        # pylint: disable=maybe-no-member
         if args.server:
-            self.ipaserver['host'] = args.server  # pylint: disable=maybe-no-member
+            self.ipaserver['host'] = args.server
 
         if args.user:
-            self.ipaserver['user'] = args.user  # pylint: disable=maybe-no-member
+            self.ipaserver['user'] = args.user
 
         if args.password:
-            self.ipaserver['password'] = args.password  # pylint: disable=maybe-no-member
+            self.ipaserver['password'] = args.password
 
         if args.port:
-            self.ipaserver['port'] = args.port  # pylint: disable=maybe-no-member
+            self.ipaserver['port'] = args.port
 
         if args.version:
-            self.ipaserver['version'] = args.version  # pylint: disable=maybe-no-member
+            self.ipaserver['version'] = args.version
 
         # This one can be bool or str values
         if args.verify_method is not None:
-            self.ipaserver['verify_method'] = args.verify_method  # pylint: disable=maybe-no-member
+            self.ipaserver['verify_method'] = args.verify_method
 
         if args.verify_ssl is not None:
-            self.ipaserver['verify_ssl'] = args.verify_ssl  # pylint: disable=maybe-no-member
+            self.ipaserver['verify_ssl'] = args.verify_ssl
 
         if args.verify_warnings is not None:
-            self.ipaserver['verify_warnings'] = args.verify_warnings  # pylint: disable=maybe-no-member
+            self.ipaserver['verify_warnings'] = args.verify_warnings
 
         # If there's no config file, write one
         if not os.path.isfile(args.file):
