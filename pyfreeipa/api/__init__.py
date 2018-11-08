@@ -2,7 +2,7 @@
 { item_description }
 """
 # import sys
-import urllib
+# import urllib
 import json
 from typing import Union
 import requests
@@ -104,6 +104,10 @@ class Api(object):
         return response
 
     def login(self):
+        """
+        Logs in to freeIPA
+        """
+
         commandurl = (
             "%s/session/login_password" %
             self._baseurl
@@ -123,7 +127,6 @@ class Api(object):
             headers=headers
         )
         return response
-
 
     def clearwarnings(self):
         """

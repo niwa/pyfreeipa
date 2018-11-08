@@ -10,7 +10,13 @@ CONFIG = pyfreeipa.configuration.Configuration()
 
 
 def main():
+    """
+    @brief      This provides a wrapper for the pyfreeipa module
 
+    @return     { description_of_the_return_value }
+    """
+
+    # pylint: disable=maybe-no-member
     if CONFIG.command == 'dumpconfig':
         print(json.dumps(vars(CONFIG), indent=4, sort_keys=True))
         sys.exit(0)
