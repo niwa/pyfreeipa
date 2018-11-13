@@ -167,29 +167,29 @@ if os.path.isfile(ARGS.file):
 
 # Override configuration loaded from file with command line arguments
 if ARGS.server:
-    CONFIG.ipaserver['host'] = ARGS.server
+    CONFIG['ipaserver']['host'] = ARGS.server
 
 if ARGS.user:
-    CONFIG.ipaserver['user'] = ARGS.user
+    CONFIG['ipaserver']['user'] = ARGS.user
 
 if ARGS.password:
-    CONFIG.ipaserver['password'] = ARGS.password
+    CONFIG['ipaserver']['password'] = ARGS.password
 
 if ARGS.port:
-    CONFIG.ipaserver['port'] = ARGS.port
+    CONFIG['ipaserver']['port'] = ARGS.port
 
 if ARGS.version:
-    CONFIG.ipaserver['version'] = ARGS.version
+    CONFIG['ipaserver']['version'] = ARGS.version
 
 # This one can be bool or str values
 if ARGS.verify_method is not None:
-    CONFIG.ipaserver['verify_method'] = ARGS.verify_method
+    CONFIG['ipaserver']['verify_method'] = ARGS.verify_method
 
 if ARGS.verify_ssl is not None:
-    CONFIG.ipaserver['verify_ssl'] = ARGS.verify_ssl
+    CONFIG['ipaserver']['verify_ssl'] = ARGS.verify_ssl
 
 if ARGS.verify_warnings is not None:
-    CONFIG.ipaserver['verify_warnings'] = ARGS.verify_warnings
+    CONFIG['ipaserver']['verify_warnings'] = ARGS.verify_warnings
 
 # If there's no config file, write one
 if not os.path.isfile(ARGS.file):
