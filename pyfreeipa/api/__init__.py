@@ -10,7 +10,7 @@ import requests
 import urllib3
 
 
-class Api(object):
+class Api:
     """
     @brief      Class for api connection to an IPA server.
     """
