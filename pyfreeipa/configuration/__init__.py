@@ -8,214 +8,201 @@ from typing import Union
 import yaml
 
 
-class Configuration:
+def do_args():
     """
-    @brief      Class for configuration.
+    @brief      { function_description }
+
+    @return     { description_of_the_return_value }
     """
+    # Parse command line arguments and modify config
+    parser = argparse.ArgumentParser(
+        prog='pyfreeipa.py',
+        description='Python FreeIPA tools'
+    )
 
-    def __init__(self):
-        """
-        @brief      Constructs the object.
+    # Command line arguments
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest='verbose',
+        help="Increase output to stderr and stdout",
+        action="store_true"
+    )
 
-        @param      self  The object
-        """
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        dest='quiet',
+        help="Reduce output to stderr and stdout",
+        action="store_true"
+    )
 
-        # Set defaults
-        defaults = {
-            'ipaserver': {
-                'host': 'ipaserver.example.org',
-                'user': 'username',
-                'password': None,
-                'port': 443,
-                'version': 2.228,
-                'verify_ssl': True,
-                'verify_method': True,
-                'verify_warnings': True
-            }
-        }
+    parser.add_argument(
+        "-d",
+        "--dry_run",
+        dest='dryrun',
+        help="Do a dry run, no changes written to IPA server",
+        action="store_true"
+    )
 
-        self.__dict__.update(defaults)
+    parser.add_argument(
+        "-f",
+        "--file",
+        default='pyfreeipa.conf.yaml',
+        dest='file',
+        help="Specify a configuration file",
+    )
 
-        args = self._do_args()
+    parser.add_argument(
+        '-s',
+        '--server',
+        default=None,
+        type=str,
+        dest='server',
+        help="Hostname of IPA server"
+    )
 
-        # Override configuration defaults with values from the config file
-        if os.path.isfile(args.file):
-            with open(args.file, 'r') as configfile:
-                self.__dict__.update(yaml.load(configfile))
+    parser.add_argument(
+        '-u',
+        '--user',
+        default=None,
+        type=str,
+        dest='user',
+        help="The username used to connect to the IPA server"
+    )
 
-        # Override configuration loaded from file with command line arguments
-        # pylint: disable=maybe-no-member
-        if args.server:
-            self.ipaserver['host'] = args.server
+    parser.add_argument(
+        '-p',
+        '--password',
+        default=None,
+        type=str,
+        dest='password',
+        help="The password used to conenct to the IPA server"
+    )
 
-        if args.user:
-            self.ipaserver['user'] = args.user
+    parser.add_argument(
+        '--port',
+        default=None,
+        type=str,
+        dest='port',
+        help="The password used to conenct to the IPA server"
+    )
 
-        if args.password:
-            self.ipaserver['password'] = args.password
+    parser.add_argument(
+        '--version',
+        default=None,
+        type=str,
+        dest='version',
+        help="The IPA server API version"
+    )
 
-        if args.port:
-            self.ipaserver['port'] = args.port
-
-        if args.version:
-            self.ipaserver['version'] = args.version
-
-        # This one can be bool or str values
-        if args.verify_method is not None:
-            self.ipaserver['verify_method'] = args.verify_method
-
-        if args.verify_ssl is not None:
-            self.ipaserver['verify_ssl'] = args.verify_ssl
-
-        if args.verify_warnings is not None:
-            self.ipaserver['verify_warnings'] = args.verify_warnings
-
-        # If there's no config file, write one
-        if not os.path.isfile(args.file):
-            print(
-                "The configuration file %s was missing,"
-                " wrote default configuration to file" %
-                args.file
-            )
-            with open(args.file, 'w') as configfile:
-                yaml.dump(vars(self), configfile, default_flow_style=False)
-            sys.exit(0)
-
-        # Set state from command line
-        self.command = args.command
-        self.dryrun = args.dryrun
-
-    @staticmethod
-    def _do_args():
-        """
-        @brief      { function_description }
-
-        @return     { description_of_the_return_value }
-        """
-        # Parse command line arguments and modify config
-        parser = argparse.ArgumentParser(
-            prog='pyfreeipa.py',
-            description='Python FreeIPA tools'
+    parser.add_argument(
+        '--verify_ssl',
+        default=None,
+        type=bool,
+        dest='verify_ssl',
+        help=(
+            "If true the SSL certificate of the"
+            " IPA server will be verified"
         )
+    )
 
-        # Command line arguments
-        parser.add_argument(
-            "-v",
-            "--verbose",
-            dest='verbose',
-            help="Increase output to stderr and stdout",
-            action="store_true"
+    parser.add_argument(
+        '--verify_warnings',
+        default=None,
+        type=bool,
+        dest='verify_warnings',
+        help=(
+            "If false warnings about the SSL state of "
+            "the IPA server will be silenced"
         )
+    )
 
-        parser.add_argument(
-            "-q",
-            "--quiet",
-            dest='quiet',
-            help="Reduce output to stderr and stdout",
-            action="store_true"
+    parser.add_argument(
+        '--verify_method',
+        default=None,
+        type=Union[bool, str],
+        dest='verify_method',
+        help=(
+            "The method used to validate the SSL state of "
+            "the IPA server"
         )
+    )
 
-        parser.add_argument(
-            "-d",
-            "--dry_run",
-            dest='dryrun',
-            help="Do a dry run, no changes written to IPA server",
-            action="store_true"
-        )
+    # Positional commands
+    parser.add_argument(
+        dest='command',
+        help='Command help',
+        type=str,
+        choices=[
+            'dumpconfig',
+            'connectiontest'
+        ]
+    )
 
-        parser.add_argument(
-            "-f",
-            "--file",
-            default='pyfreeipa.conf.yaml',
-            dest='file',
-            help="Specify a configuration file",
-        )
+    return parser.parse_args()
 
-        parser.add_argument(
-            '-s',
-            '--server',
-            default=None,
-            type=str,
-            dest='server',
-            help="Hostname of IPA server"
-        )
+# Create the CONFIG to be imported elsewhere
+# Set defaults
+CONFIG = {
+    'ipaserver': {
+        'host': 'ipaserver.example.org',
+        'user': 'username',
+        'password': None,
+        'port': 443,
+        'version': 2.228,
+        'verify_ssl': True,
+        'verify_method': True,
+        'verify_warnings': True
+    }
+}
 
-        parser.add_argument(
-            '-u',
-            '--user',
-            default=None,
-            type=str,
-            dest='user',
-            help="The username used to connect to the IPA server"
-        )
 
-        parser.add_argument(
-            '-p',
-            '--password',
-            default=None,
-            type=str,
-            dest='password',
-            help="The password used to conenct to the IPA server"
-        )
+ARGS = do_args()
 
-        parser.add_argument(
-            '--port',
-            default=None,
-            type=str,
-            dest='port',
-            help="The password used to conenct to the IPA server"
-        )
+# Override configuration defaults with values from the config file
+if os.path.isfile(ARGS.file):
+    with open(ARGS.file, 'r') as configfile:
+        CONFIG.update(yaml.load(configfile))
 
-        parser.add_argument(
-            '--version',
-            default=None,
-            type=str,
-            dest='version',
-            help="The IPA server API version"
-        )
+# Override configuration loaded from file with command line arguments
+# pylint: disable=maybe-no-member
+if ARGS.server:
+    CONFIG.ipaserver['host'] = ARGS.server
 
-        parser.add_argument(
-            '--verify_ssl',
-            default=None,
-            type=bool,
-            dest='verify_ssl',
-            help=(
-                "If true the SSL certificate of the"
-                " IPA server will be verified"
-            )
-        )
+if ARGS.user:
+    CONFIG.ipaserver['user'] = ARGS.user
 
-        parser.add_argument(
-            '--verify_warnings',
-            default=None,
-            type=bool,
-            dest='verify_warnings',
-            help=(
-                "If false warnings about the SSL state of "
-                "the IPA server will be silenced"
-            )
-        )
+if ARGS.password:
+    CONFIG.ipaserver['password'] = ARGS.password
 
-        parser.add_argument(
-            '--verify_method',
-            default=None,
-            type=Union[bool, str],
-            dest='verify_method',
-            help=(
-                "The method used to validate the SSL state of "
-                "the IPA server"
-            )
-        )
+if ARGS.port:
+    CONFIG.ipaserver['port'] = ARGS.port
 
-        # Positional commands
-        parser.add_argument(
-            dest='command',
-            help='Command help',
-            type=str,
-            choices=[
-                'dumpconfig',
-                'connectiontest'
-            ]
-        )
+if ARGS.version:
+    CONFIG.ipaserver['version'] = ARGS.version
 
-        return parser.parse_args()
+# This one can be bool or str values
+if ARGS.verify_method is not None:
+    CONFIG.ipaserver['verify_method'] = ARGS.verify_method
+
+if ARGS.verify_ssl is not None:
+    CONFIG.ipaserver['verify_ssl'] = ARGS.verify_ssl
+
+if ARGS.verify_warnings is not None:
+    CONFIG.ipaserver['verify_warnings'] = ARGS.verify_warnings
+
+# If there's no config file, write one
+if not os.path.isfile(ARGS.file):
+    print(
+        "The configuration file %s was missing,"
+        " wrote default configuration to file" %
+        ARGS.file
+    )
+    with open(ARGS.file, 'w') as configfile:
+        yaml.dump(vars(CONFIG), configfile, default_flow_style=False)
+    sys.exit(0)
+
+# Set state from command line
+CONFIG['command'] = ARGS.command
+CONFIG['dryrun'] = ARGS.dryrun
