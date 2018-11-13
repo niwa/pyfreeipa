@@ -166,7 +166,6 @@ if os.path.isfile(ARGS.file):
         CONFIG.update(yaml.load(configfile))
 
 # Override configuration loaded from file with command line arguments
-# pylint: disable=maybe-no-member
 if ARGS.server:
     CONFIG.ipaserver['host'] = ARGS.server
 
