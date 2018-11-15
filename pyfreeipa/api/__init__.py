@@ -20,9 +20,11 @@ class Api:
             username: type=str,
             password: type=str,
             port: int=443,
+            protocol: str='https',
             verify_ssl: bool=True,
             verify_method: bool=True,
             verify_warnings: bool=True,
+            version: str='2.228',
             dryrun: bool=False
     ):
 
@@ -30,9 +32,11 @@ class Api:
         self._username = username
         self._password = password
         self._port = port
+        self._protocol = protocol
         self._verify_ssl = verify_ssl
         self._verify_method = verify_method
         self._verify_warnings = verify_warnings
+        self._version = version
         self._dryrun = dryrun
 
         self.warnings = []
@@ -45,12 +49,15 @@ class Api:
             self.warnings.append(reason)
 
         self._baseurl = (
-            "https://%s:%s/ipa" %
+            "%s://%s/ipa" %
             (
-                self._host,
-                self._port
+                self._protocol,
+                self._host
             )
         )
+
+        self._sessionurl = "%s/session/json" % self._baseurl
+        self._loginurl = "%s/session/login_password" % self._baseurl
 
         if not self._verify_warnings:
             reason = (
@@ -64,68 +71,66 @@ class Api:
         self._session.url = self._baseurl
         self._session.verify = self._verify_ssl
         self._session.headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'text/plain'
+            'Referer': self._baseurl,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         }
-        self._session.auth = requests.auth.HTTPBasicAuth(
-            self._username,
-            self._password
-        )
+
+        self.login()
 
     def _get(
             self,
-            commandurl: type=str,
-            params: Union[None, dict]=None
+            *dargs,
+            **kwargs
     ):
-        print(commandurl)
         response = self._session.get(
-            url=commandurl,
-            params=params
+            *dargs,
+            **kwargs
         )
         return response
 
     def _post(
             self,
-            commandurl: type=str,
-            data: type=dict,
-            headers: Union[None, dict]=None,
+            *dargs,
+            **kwargs
     ):
-        if headers:
-            response = self._session.post(
-                url=commandurl,
-                data=json.dumps(data),
-                headers=headers
-            )
-        else:
-            response = self._session.post(
-                url=commandurl,
-                data=json.dumps(data)
-            )
+        response = self._session.post(
+            *dargs,
+            **kwargs
+        )
         return response
 
-    def login(self):
+    def _request(
+        self,
+        method,
+        args=None,
+        params=None
+    ):
         """
-        Logs in to freeIPA
+        ugh, I don't like this way
         """
+        if not isinstance(args, list):
+            args = [args]
 
-        commandurl = (
-            "%s/session/login_password" %
-            self._baseurl
-        )
+        if not params:
+            params = {}
+
+        if self._version:
+            params.setdefault('version', self._version)
+
         data = {
-            'user': self._username,
-            'password': self._password
+            'id': 0,
+            'method': method,
+            'params': [args, params]
         }
-        headers = {
-            'referer': commandurl,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'text/plain'
-        }
-        response = self._session.post(
-            commandurl,
-            data=data,
-            headers=headers
+
+        response = self._session.get(
+            self._sessionurl,
+            headers=self._sessionheaders,
+            data=json.dumps(data),
+            verify=self._verify_ssl
         )
+
         return response
 
     def clearwarnings(self):
@@ -138,3 +143,53 @@ class Api:
         """
         self.warnings = []
         return self.warnings
+
+# All definitions from this point are IPA API commands
+    def login(self):
+        logindata = {
+            'user': self._username,
+            'password': self._password
+        }
+
+        loginheaders = {
+            'referer': self._loginurl,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+        }
+
+        response = self._post(
+            self._loginurl,
+            data=logindata,
+            headers=loginheaders
+        )
+
+        return response
+
+    def whoami(self):
+        """
+        @brief      Returns the response from the whoami command
+
+        @param      self  The object
+
+        @return     { description_of_the_return_value }
+        """
+        data = {'method': 'whoami'}
+        return self._get(
+            self._sessionurl,
+            data=data
+        )
+
+    def ping(self):
+        """
+        @brief      Returns the response from the whoami command
+
+        @param      self  The object
+
+        @return     { description_of_the_return_value }
+        """
+
+        data = {'method': 'ping'}
+        return self._get(
+            self._sessionurl,
+            data=data
+        )

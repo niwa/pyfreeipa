@@ -35,10 +35,11 @@ def main():
             "Test connection to %s" %
             CONFIG['ipaserver']['host']
         )
-        response = ipaapi.login()
-        if response.status_code != 200:
+
+        response = ipaapi.ping()
+        if response.ok:
             print(
-                'Failed to log %s in to %s' %
+                'Successfully pinged as %s on %s' %
                 (
                     CONFIG['ipaserver']['user'],
                     CONFIG['ipaserver']['host']
@@ -46,12 +47,16 @@ def main():
             )
         else:
             print(
-                'Successfully logged in as %s on %s' %
+                'Failed to ping as %s in to %s, reason "%s: %s"' %
                 (
                     CONFIG['ipaserver']['user'],
-                    CONFIG['ipaserver']['host']
+                    CONFIG['ipaserver']['host'],
+                    response.status_code,
+                    response.reason
                 )
             )
+        print(response.url)
+        print(response.text)
 
     else:
         print("Does nothing")
