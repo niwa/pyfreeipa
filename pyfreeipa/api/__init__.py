@@ -170,7 +170,16 @@ class Api:
         return self.warnings
 
 # All definitions from this point are IPA API commands
+# in alphabetical order (hopefully)
+
     def login(self):
+        """
+        @brief      Returns the response from the login command
+
+        @param      self  The object
+
+        @return     the requests.Response from the login request
+        """
         logindata = {
             'user': self._username,
             'password': self._password
@@ -190,24 +199,24 @@ class Api:
 
         return response
 
+    def ping(self):
+        """
+        @brief      Returns the response from the ping command
+
+        @param      self  The object
+
+        @return     the requests.Response from the ping request
+        """
+
+        return self.request('ping')
+
     def whoami(self):
         """
         @brief      Returns the response from the whoami command
 
         @param      self  The object
 
-        @return     { description_of_the_return_value }
+        @return     the requests.Response from the whoami request
         """
 
         return self.request('whoami')
-
-    def ping(self):
-        """
-        @brief      Returns the response from the whoami command
-
-        @param      self  The object
-
-        @return     { description_of_the_return_value }
-        """
-
-        return self.request('ping')
