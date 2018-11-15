@@ -78,39 +78,65 @@ class Api:
 
         self.login()
 
-    def _get(
+    def get(
             self,
             *dargs,
             **kwargs
     ):
+        """
+        This exposes a raw get method for the session
+        """
         response = self._session.get(
             *dargs,
             **kwargs
         )
         return response
 
-    def _post(
+    def post(
             self,
             *dargs,
             **kwargs
     ):
+        """
+        This exposes a raw post method for the internal session
+        """
         response = self._session.post(
             *dargs,
             **kwargs
         )
         return response
 
-    def _request(
-        self,
-        method,
-        args=None,
-        params=None
+    # This exposes a raw put method for the internal session
+    def put(
+            self,
+            *dargs,
+            **kwargs
     ):
         """
-        ugh, I don't like this way
+        This exposes a raw put method for the internal session
         """
-        if not isinstance(args, list):
-            args = [args]
+        response = self._session.put(
+            *dargs,
+            **kwargs
+        )
+        return response
+
+    def request(
+            self,
+            method,
+            args=None,
+            params=None
+    ):
+        """
+        This cleans up the args and parameters
+        posts the and handles the request
+        and returns the response
+        """
+        if args:
+            if not isinstance(args, list):
+                args = [args]
+        else:
+            args = []
 
         if not params:
             params = {}
@@ -124,9 +150,8 @@ class Api:
             'params': [args, params]
         }
 
-        response = self._session.get(
+        response = self.post(
             self._sessionurl,
-            headers=self._sessionheaders,
             data=json.dumps(data),
             verify=self._verify_ssl
         )
@@ -157,7 +182,7 @@ class Api:
             'Accept': 'application/json'
         }
 
-        response = self._post(
+        response = self.post(
             self._loginurl,
             data=logindata,
             headers=loginheaders
@@ -173,11 +198,8 @@ class Api:
 
         @return     { description_of_the_return_value }
         """
-        data = {'method': 'whoami'}
-        return self._get(
-            self._sessionurl,
-            data=data
-        )
+
+        return self.request('whoami')
 
     def ping(self):
         """
@@ -188,8 +210,4 @@ class Api:
         @return     { description_of_the_return_value }
         """
 
-        data = {'method': 'ping'}
-        return self._get(
-            self._sessionurl,
-            data=data
-        )
+        return self.request('ping')

@@ -45,6 +45,8 @@ def main():
                     CONFIG['ipaserver']['host']
                 )
             )
+            result = response.json()['result']
+            print(result['summary'])
         else:
             print(
                 'Failed to ping as %s in to %s, reason "%s: %s"' %
@@ -55,8 +57,6 @@ def main():
                     response.reason
                 )
             )
-        print(response.url)
-        print(response.text)
 
     else:
         print("Does nothing")
