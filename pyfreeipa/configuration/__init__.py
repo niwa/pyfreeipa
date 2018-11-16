@@ -133,6 +133,8 @@ def do_args():
     parser.add_argument(
         dest='command',
         help='Command help',
+        default=None,
+        nargs='?',
         type=str,
         choices=[
             'dumpconfig',

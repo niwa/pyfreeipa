@@ -1,5 +1,5 @@
 """
-{ item_description }
+A generic wrapper script for the pyfreeipa Api class
 """
 import json
 import sys
@@ -59,7 +59,7 @@ def main():
             )
 
     else:
-        print("Does nothing")
+        print("No command provided")
 
 
 if __name__ == "__main__":

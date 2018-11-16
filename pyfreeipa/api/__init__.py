@@ -5,6 +5,7 @@
 # import urllib
 import json
 from typing import Union
+from datetime import datetime
 import requests
 # import pathlib
 import urllib3
@@ -138,7 +139,7 @@ class Api:
 
     def request(
             self,
-            method,
+            method: str,
             args=None,
             params=None
     ):
@@ -173,11 +174,52 @@ class Api:
 
         response = self.post(
             self._sessionurl,
-            data=json.dumps(data),
-            verify=self._verify_ssl
+            data=json.dumps(data)
         )
 
         return response
+
+    def preprequest(
+            self,
+            method: str,
+            args=None,
+            params=None
+    ):
+        """
+        @brief This cleans up the args and parameters posts the and creates a prepared reques from the internal sessions object
+
+        @param self This object
+        @param method The FreeIPA API method to request
+        @param args A list of arguments to be passed to the method request
+        @param params A dictionary of parameters to be passed to the method request
+
+        @return a requests.Response object
+        """
+        if args:
+            if not isinstance(args, list):
+                args = [args]
+        else:
+            args = []
+
+        if not params:
+            params = {}
+
+        if self._version:
+            params.setdefault('version', self._version)
+
+        data = {
+            'id': 0,
+            'method': method,
+            'params': [args, params]
+        }
+
+        request = requests.Request(
+            'POST',
+            self._sessionurl,
+            data=json.dumps(data)
+        )
+
+        return self._session.prepare_request(request)
 
     def clearwarnings(self):
         """
@@ -192,7 +234,9 @@ class Api:
         return warnings
 
 # All definitions from this point are IPA API commands
-# in alphabetical order (hopefully)
+# Two sections Read and Write, with methods in alphabetical order
+
+# Read methods that make no change to the directory and should work in
 
     def login(self):
         """
@@ -240,3 +284,127 @@ class Api:
         @return     the requests.Response from the whoami request
         """
         return self.request('whoami')
+
+# Write methods that may cause changes to the directory
+# These methods MUST require dryrun to be false to write changes
+
+    def otptoken_add(
+            self,
+            # Arguments
+            uniqueid: str,
+            # Options
+            otptype: Union[str, None]=None,
+            description: Union[str, None]=None,
+            owner: Union[str, None]=None,
+            disabled: Union[bool, None]=None,
+            notbefore: Union[datetime, None]=None,
+            notafter: Union[datetime, None]=None,
+            vendor: Union[str, None]=None,
+            model: Union[str, None]=None,
+            serial: Union[str, None]=None,
+            otpkey: Union[str, None]=None,
+            otpalgorithm: Union[str, None]=None,
+            otpdigits: Union[int, None]=None,
+            otpclockoffset: Union[int, None]=None,
+            otptimestep: Union[int, None]=None,
+            otpcounter: Union[int, None]=None,
+            no_qrcode: Union[bool, None]=None,
+            no_members: Union[bool, None]=None,
+            otpsetattr: Union[list, None]=None,
+            addattr: Union[list, None]=None,
+            # Custom
+            managedby: Union[list, None]=None
+    ):
+
+        method = 'otptoken_add'
+
+        args = uniqueid
+
+        params = {}
+
+        # These options need some checking before submitting a request
+        typevalues = ['totp', 'hotp', 'TOTP', 'HOTP']
+        if otptype is not None:
+            if otptype in typevalues:
+                params['type'] = otptype
+            else:
+                raise ValueError(
+                    "otptoken_add: otptype must be one of %r" % typevalues
+                )
+
+        algovalues = ['sha1', 'sha256', 'sha384', 'sha512']
+        if otpalgorithm is not None:
+            if otpalgorithm.lower() in algovalues:
+                params['ipatokenotpalgorithm'] = otpalgorithm.lower()
+            else:
+                raise ValueError(
+                    "otptoken_add: otpalgorithm must be one of %r" % typevalues
+                )
+
+        # These options just need to be mapped to request parameters
+        if description is not None:
+            params['description'] = description
+
+        if owner is not None:
+            params['ipatokenowner'] = owner
+
+        if disabled is not None:
+            params['ipatokendisabled'] = disabled
+
+        if notafter is not None:
+            params['ipatokennotafter'] = notafter
+
+        if notbefore is not None:
+            params['ipatokennotbefore'] = notbefore
+
+        if vendor is not None:
+            params['ipatokenvendor'] = vendor
+
+        if model is not None:
+            params['ipatokenmodel'] = model
+
+        if serial is not None:
+            params['ipatokenserial'] = serial
+
+        if otpkey is not None:
+            params['ipatokenotpkey'] = otpkey
+
+        if otpdigits is not None:
+            params['ipatokenotpdigits'] = otpdigits
+
+        if otpclockoffset is not None:
+            params['ipatokentotpclockoffset'] = otpclockoffset
+
+        if otptimestep is not None:
+            params['ipatokentotptimestep'] = otptimestep
+
+        if otpcounter is not None:
+            params['ipatokenhotpcounter'] = otpcounter
+
+        if no_qrcode is not None:
+            params['no_qrcoderequired'] = no_qrcode
+
+        if no_members is not None:
+            params['no_membersrequired'] = no_members
+
+        if otpsetattr is not None:
+            params['setattr'] = otpsetattr
+
+        if addattr is not None:
+            params['addattr'] = addattr
+        # Custom
+        if managedby is not None:
+            print("I'm special")
+
+        if not self._dryrun:
+            return self.request(
+                method,
+                args=args,
+                params=params
+            )
+        else:
+            return self.preprequest(
+                method,
+                args=args,
+                params=params
+            )

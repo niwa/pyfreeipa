@@ -69,6 +69,7 @@ tests/*.conf.yaml
 
 # ignore some txt files
 ignore*.txt
+ignore/
 
 # ignore dumps and logs
 log/
