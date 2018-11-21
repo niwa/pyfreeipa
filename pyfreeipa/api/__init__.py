@@ -265,6 +265,46 @@ class Api:
 
         return response
 
+    def otptoken_show(
+            self,
+            uniqueid: str,
+            no_members: Union[bool, None]=None,
+            allattrs: Union[bool, None]=None,
+            raw: Union[bool, None]=None
+    ):
+        """
+        @brief Implements the otptoken_show request
+
+        @param self The object
+        @param uniqueid, the unique idetifier (`iparokenuniqueid`) attribute of the token to show
+        @param no_members, if true this suppresses processing of membershib attributes
+        @param all, retrieves all attributes
+        @param raw, returns the raw response, only changes output format
+
+        @return the request.Response from the otpoken_show request
+        """
+
+        method = 'otptoken_show'
+
+        args = uniqueid
+
+        params = {}
+
+        if no_members is not None:
+            params['no_members'] = no_members
+
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
+
+        return self.request(
+            method,
+            args=args,
+            params=params
+        )
+
     def ping(self):
         """
         @brief      Returns the response from the ping command
@@ -382,10 +422,10 @@ class Api:
             params['ipatokenhotpcounter'] = otpcounter
 
         if no_qrcode is not None:
-            params['no_qrcoderequired'] = no_qrcode
+            params['no_qrcode'] = no_qrcode
 
         if no_members is not None:
-            params['no_membersrequired'] = no_members
+            params['no_members'] = no_members
 
         if otpsetattr is not None:
             params['setattr'] = otpsetattr

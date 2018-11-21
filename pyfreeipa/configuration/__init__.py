@@ -81,6 +81,14 @@ def do_args():
     )
 
     parser.add_argument(
+        '--uid',
+        default=None,
+        type=str,
+        dest='uid',
+        help="Passes a unique identifier, such as a uid of a user, or the uniqueid of an otptoken"
+    )
+
+    parser.add_argument(
         '--port',
         default=None,
         type=str,
@@ -180,6 +188,7 @@ if ARGS.password:
 if ARGS.port:
     CONFIG['ipaserver']['port'] = ARGS.port
 
+
 if ARGS.version:
     CONFIG['ipaserver']['version'] = ARGS.version
 
@@ -207,3 +216,4 @@ if not os.path.isfile(ARGS.file):
 # Set state from command line
 CONFIG['command'] = ARGS.command
 CONFIG['dryrun'] = ARGS.dryrun
+CONFIG['uid'] = ARGS.uid
