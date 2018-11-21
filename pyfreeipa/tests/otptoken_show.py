@@ -30,9 +30,13 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
-    response = ipaapi.otptoken_show(
-        CONFIG['uid']
-    )
+    if CONFIG['uid']:
+        response = ipaapi.otptoken_show(
+            CONFIG['uid']
+        )
+    else:
+        print("Requires a otptoken uniqueid specified with --uid")
+        sys.exit(1)
 
     print(json.dumps(response.json(), indent=4, sort_keys=True))
 
