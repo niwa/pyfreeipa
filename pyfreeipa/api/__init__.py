@@ -595,18 +595,18 @@ class Api:
         if managedby is not None:
             print("I'm special")
 
+        prepared = self.preprequest(
+            method,
+            args=args,
+            params=params
+        )
+
         if not self._dryrun:
-            return self.request(
-                method,
-                args=args,
-                params=params
-            )
+            response = self._session.send(prepared)
         else:
-            return self.preprequest(
-                method,
-                args=args,
-                params=params
-            )
+            response = prepared
+
+        return response
 
 # The next methods produce objects, or lists or objects
 # These are intended for simple operations that don't require
