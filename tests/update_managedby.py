@@ -49,10 +49,10 @@ def main():
             state = "No managers"
 
         print(
-            "%s: %s %s %s" %
+            "%s: %s current:%s expected:%s" %
             (
                 state,
-                token['ipatokenuniqueid'],
+                token['ipatokenuniqueid'][0],
                 current_managers,
                 token_managers
             )
