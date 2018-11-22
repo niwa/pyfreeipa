@@ -174,6 +174,10 @@ CONFIG = {
         'verify_ssl': True,
         'verify_method': True,
         'verify_warnings': True
+    },
+    'otptoken': {
+        'managedby': [],
+        'ownermanagedby': True
     }
 }
 
@@ -227,3 +231,6 @@ CONFIG['command'] = ARGS.command
 CONFIG['dryrun'] = ARGS.dryrun
 CONFIG['uid'] = ARGS.uid
 CONFIG['group'] = ARGS.group
+
+if not isinstance(CONFIG['otptoken']['managedby'], list):
+    CONFIG['otptoken']['managedby'] = [CONFIG['otptoken']['managedby']]
