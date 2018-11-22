@@ -84,8 +84,9 @@ def do_args():
         '--uid',
         default=None,
         type=str,
+        nargs='+',
         dest='uid',
-        help="Passes a unique identifier, such as a uid of a user, or the uniqueid of an otptoken"
+        help="Passes a unique identifier, such as a uid of a user, or the uniqueid of an otptoken. Multiple uids can be specified."
     )
 
     parser.add_argument(
@@ -94,7 +95,7 @@ def do_args():
         type=str,
         nargs='+',
         dest='group',
-        help="The name of a group to use"
+        help="The name of a group to use, multiple groups can be specified"
     )
 
     parser.add_argument(
