@@ -34,11 +34,16 @@ def main():
         response = ipaapi.otptoken_find(
             CONFIG['uid']
         )
+        tokens = ipaapi.otptokens(CONFIG['uid'])
     else:
         response = ipaapi.otptoken_find()
+        tokens = ipaapi.otptokens()
 
+    print("Raw response:")
     print(json.dumps(response.json(), indent=4, sort_keys=True))
-    print(response.request.body)
+
+    print("Response as a list object:")
+    print(json.dumps(tokens, indent=4, sort_keys=True))
 
 
 if __name__ == "__main__":

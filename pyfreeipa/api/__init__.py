@@ -500,3 +500,47 @@ class Api:
                 args=args,
                 params=params
             )
+
+# The next methods produce objects, or lists or objects
+
+    def otptoken(
+        self,
+        uniqueid: str
+    ):
+        """
+        @brief      { function_description }
+
+        @param      self      The object
+        @param      uniqueid  The uniqueid of he token to be returned
+
+        @return     { description_of_the_return_value }
+        """
+
+        response = self.otptoken_show(uniqueid)
+
+        return response.json()['result']['result']
+
+    def otptokens(
+        self,
+        searchstring: Union[str, None]=None,
+        uniqueid: Union[str, None]=None,
+        owner: Union[str, None]=None
+    ):
+        """
+        @brief      { function_description }
+
+        @param      self          The object
+        @param      searchstring  The searchstring used on any otptoken attribute
+        @param      uniqueid      substring used to match otptoken uniqueid
+        @param      owner         search for tokens owned but specified user
+
+        @return     { description_of_the_return_value }
+        """
+
+        response = self.otptoken_find(
+            searchstring=searchstring,
+            uniqueid=uniqueid,
+            owner=owner
+        )
+
+        return response.json()['result']['result']

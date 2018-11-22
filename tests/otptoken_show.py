@@ -34,11 +34,16 @@ def main():
         response = ipaapi.otptoken_show(
             CONFIG['uid']
         )
+        token = ipaapi.otptoken(CONFIG['uid'])
     else:
         print("Requires a otptoken uniqueid specified with --uid")
         sys.exit(1)
 
+    print("Raw response:")
     print(json.dumps(response.json(), indent=4, sort_keys=True))
+
+    print("Token as a dict object:")
+    print(json.dumps(token, indent=4, sort_keys=True))
 
 
 if __name__ == "__main__":
