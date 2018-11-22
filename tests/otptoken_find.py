@@ -39,6 +39,9 @@ def main():
         response = ipaapi.otptoken_find()
         tokens = ipaapi.otptokens()
 
+    print("The request:")
+    print(response.request.body)
+
     print("Raw response:")
     print(json.dumps(response.json(), indent=4, sort_keys=True))
 

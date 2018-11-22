@@ -367,6 +367,113 @@ class Api:
         """
         return self.request('ping')
 
+    def user_find(
+            self,
+            searchstring: Union[str, None]=None,
+            uid: Union[str, None]=None,
+            uidnumber: Union[int, None]=None,
+            in_group: Union[str, list, None]=None,
+            mail: Union[str, list, None]=None,
+            rights: Union[bool, None]=None,
+            allattrs: Union[bool, None]=None,
+            raw: Union[bool, None]=None
+    ):
+        """
+        @brief      A partial implementation of the user_find request
+
+        @param      self  The object
+
+        @param      uid of the user to be shown
+
+        @param      rights, if true, displays the access rights of this user
+
+        @param      all, retrieves all attributes
+
+        @param      raw, returns the raw response, only changes output format
+
+        @return     the requests.Response from the ping request
+        """
+
+        method = 'user_find'
+
+        args = None
+
+        if searchstring:
+            args = searchstring
+
+        params = {}
+
+        if uid is not None:
+            params['uid'] = uid
+
+        if uidnumber is not None:
+            params['uidnumber'] = uidnumber
+
+        if in_group is not None:
+            params['in_group'] = in_group
+
+        if mail is not None:
+            params['mail'] = mail
+
+        if rights is not None:
+            params['rights'] = rights
+
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
+
+        return self.request(
+            method,
+            args=args,
+            params=params
+        )
+
+    def user_show(
+            self,
+            uid: str,
+            rights: Union[bool, None]=None,
+            allattrs: Union[bool, None]=None,
+            raw: Union[bool, None]=None
+    ):
+        """
+        @brief      A complete implementation of the user_show command
+
+        @param      self  The object
+
+        @param      uid of the user to be shown
+
+        @param      rights, if true, displays the access rights of this user
+
+        @param      all, retrieves all attributes
+
+        @param      raw, returns the raw response, only changes output format
+
+        @return     the requests.Response from the ping request
+        """
+
+        method = 'user_show'
+
+        args = uid
+
+        params = {}
+
+        if rights is not None:
+            params['rights'] = rights
+
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
+
+        return self.request(
+            method,
+            args=args,
+            params=params
+        )
+
     def whoami(self):
         """
         @brief      Returns the response from the whoami command
@@ -502,10 +609,13 @@ class Api:
             )
 
 # The next methods produce objects, or lists or objects
+# These are intended for simple operations that don't require
+# full feedback from the response objecs
+# e.g. won't say why a request found nothing
 
     def otptoken(
-        self,
-        uniqueid: str
+            self,
+            uniqueid: str
     ):
         """
         @brief      { function_description }
@@ -516,15 +626,18 @@ class Api:
         @return     { description_of_the_return_value }
         """
 
-        response = self.otptoken_show(uniqueid)
+        response = self.otptoken_show(uniqueid, allattrs=True)
 
-        return response.json()['result']['result']
+        if response.json()['result']:
+            return response.json()['result']['result']
+        else:
+            return None
 
     def otptokens(
-        self,
-        searchstring: Union[str, None]=None,
-        uniqueid: Union[str, None]=None,
-        owner: Union[str, None]=None
+            self,
+            searchstring: Union[str, None]=None,
+            uniqueid: Union[str, None]=None,
+            owner: Union[str, None]=None
     ):
         """
         @brief      { function_description }
@@ -540,7 +653,64 @@ class Api:
         response = self.otptoken_find(
             searchstring=searchstring,
             uniqueid=uniqueid,
-            owner=owner
+            owner=owner,
+            allattrs=True
         )
 
-        return response.json()['result']['result']
+        if response.json()['result']:
+            return response.json()['result']['result']
+        else:
+            return []
+
+    def user(
+            self,
+            uid: str
+    ):
+        """
+        @brief      { function_description }
+
+        @param      self  The object
+        @param      uid   The uid of the user to return
+
+        @return     the user account as a dictionary
+        """
+
+        response = self.user_show(uid, allattrs=True)
+
+        if response.json()['result']:
+            return response.json()['result']['result']
+        else:
+            return None
+
+    def users(
+            self,
+            searchstring: Union[str, None]=None,
+            uid: Union[str, None]=None,
+            uidnumber: Union[int, None]=None,
+            in_group: Union[str, list, None]=None,
+            mail: Union[str, list, None]=None,
+    ):
+        """
+        @brief      { function_description }
+
+        @param      self          The object
+        @param      searchstring  The searchstring used on any otptoken attribute
+        @param      uniqueid      substring used to match otptoken uniqueid
+        @param      owner         search for tokens owned but specified user
+
+        @return     { description_of_the_return_value }
+        """
+
+        response = self.user_find(
+            searchstring=searchstring,
+            uid=uid,
+            uidnumber=uidnumber,
+            in_group=in_group,
+            mail=mail,
+            allattrs=True
+        )
+
+        if response.json()['result']:
+            return response.json()['result']['result']
+        else:
+            return []

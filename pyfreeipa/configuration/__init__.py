@@ -89,6 +89,15 @@ def do_args():
     )
 
     parser.add_argument(
+        '--group',
+        default=None,
+        type=str,
+        nargs='+',
+        dest='group',
+        help="The name of a group to use"
+    )
+
+    parser.add_argument(
         '--port',
         default=None,
         type=str,
@@ -188,7 +197,6 @@ if ARGS.password:
 if ARGS.port:
     CONFIG['ipaserver']['port'] = ARGS.port
 
-
 if ARGS.version:
     CONFIG['ipaserver']['version'] = ARGS.version
 
@@ -217,3 +225,4 @@ if not os.path.isfile(ARGS.file):
 CONFIG['command'] = ARGS.command
 CONFIG['dryrun'] = ARGS.dryrun
 CONFIG['uid'] = ARGS.uid
+CONFIG['group'] = ARGS.group

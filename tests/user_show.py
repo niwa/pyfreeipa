@@ -31,12 +31,12 @@ def main():
     )
 
     if CONFIG['uid']:
-        response = ipaapi.otptoken_show(
+        response = ipaapi.user_show(
             CONFIG['uid']
         )
-        token = ipaapi.otptoken(CONFIG['uid'])
+        user = ipaapi.user(CONFIG['uid'])
     else:
-        print("Requires a otptoken uniqueid specified with --uid")
+        print("Requires an account uid/username specified with --uid")
         sys.exit(1)
 
     print("The request:")
@@ -45,8 +45,8 @@ def main():
     print("Raw response:")
     print(json.dumps(response.json(), indent=4, sort_keys=True))
 
-    print("Token as a dict object:")
-    print(json.dumps(token, indent=4, sort_keys=True))
+    print("Response as a dict:")
+    print(json.dumps(user, indent=4, sort_keys=True))
 
 
 if __name__ == "__main__":
