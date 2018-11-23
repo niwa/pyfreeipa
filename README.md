@@ -26,9 +26,13 @@ else:
     print('Bad: %s' % response.status_code)
 ```
 
+Included is a `configuration` method that can read all the required configuration options from a yaml file.
+
 # Examples
 
 The `pyfreeipa` module itself can be executed as a wrapper script around `pyfreeipa.Api`
+
+There are also some test scripts that demonstrate it's capabilites in the `tests` directory, they have their own [documentation](tests/README.md).
 
 # FreeIPA API Methods
 
