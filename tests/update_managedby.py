@@ -3,7 +3,7 @@ A generic wrapper script for the pyfreeipa Api class
 """
 import json
 import sys
-from pyfreeipa.api import Api
+from pyfreeipa.Api import Api
 from pyfreeipa.configuration import CONFIG
 
 

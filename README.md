@@ -9,7 +9,7 @@ This module does not do any exception handling, it want's you to handle exceptio
 The following sample sets up a IPA API object with minimal configuration.
 
 ```python
-from pyfreeipa.api import Api
+from pyfreeipa.Api import Api
 
 ipaapi = Api(
     host="ipa.example.org",
