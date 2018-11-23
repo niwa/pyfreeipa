@@ -10,6 +10,8 @@ import requests
 # import pathlib
 import urllib3
 
+from pyfreeipa.Otptoken import Otptoken
+
 
 class Api:
     """
@@ -594,6 +596,102 @@ class Api:
         # Custom
         if managedby is not None:
             print("I'm special")
+
+        prepared = self.preprequest(
+            method,
+            args=args,
+            params=params
+        )
+
+        if not self._dryrun:
+            response = self._session.send(prepared)
+        else:
+            response = prepared
+
+        return response
+
+    def otptoken_add_managedby(
+            self,
+            # Arguments
+            uniqueid: str,
+            user: Union[list, str],
+            no_members: Union[bool, None]=None,
+            allattrs: Union[bool, None]=None,
+            raw: Union[bool, None]=None
+    ):
+        """
+        @brief adds a user to the managedBy attributes
+
+        @return the response from the otptoken_add_managedby request, unless dry run where it returns the prepared response
+        """
+
+        method = 'otptoken_add_managedby'
+
+        args = uniqueid
+
+        if not isinstance(user, list):
+            user = [user]
+
+        params = {
+            'user': user
+        }
+
+        if no_members is not None:
+            params['no_members'] = no_members
+
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
+
+        prepared = self.preprequest(
+            method,
+            args=args,
+            params=params
+        )
+
+        if not self._dryrun:
+            response = self._session.send(prepared)
+        else:
+            response = prepared
+
+        return response
+
+    def otptoken_remove_managedby(
+            self,
+            # Arguments
+            uniqueid: str,
+            user: Union[list, str],
+            no_members: Union[bool, None]=None,
+            allattrs: Union[bool, None]=None,
+            raw: Union[bool, None]=None
+    ):
+        """
+        @brief removes a user to the managedBy attributes
+
+        @return the response from the otptoken_add_managedby request, unless dry run where it returns the prepared response
+        """
+
+        method = 'otptoken_remove_managedby'
+
+        args = uniqueid
+
+        if not isinstance(user, list):
+            user = [user]
+
+        params = {
+            'user': user
+        }
+
+        if no_members is not None:
+            params['no_members'] = no_members
+
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
 
         prepared = self.preprequest(
             method,
