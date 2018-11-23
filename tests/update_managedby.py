@@ -33,7 +33,9 @@ def main():
     tokens = ipaapi.otptokens(CONFIG['uid'])
 
     for token in tokens:
-        token_managers = list(CONFIG['otptoken']['managedby'])
+        token_managers = []
+        if CONFIG['otptoken']['managedby']:
+            token_managers = list(CONFIG['otptoken']['managedby'])
         if 'ipatokenowner' in token:
             if CONFIG['otptoken']['ownermanagedby']:
                 token_managers.append(token['ipatokenowner'][0])
@@ -45,12 +47,14 @@ def main():
         if 'managedby_user' in token:
             currentmanagers = token['managedby_user']
             for manager in token_managers:
-                if manager not in token['managedby_user']:
-                    addmanagedby.append(manager)
+                if manager:
+                    if manager not in token['managedby_user']:
+                        addmanagedby.append(manager)
 
             for manager in token['managedby_user']:
-                if manager not in token_managers:
-                    removemanagedby.append(manager)
+                if manager:
+                    if manager not in token_managers:
+                        removemanagedby.append(manager)
 
         else:
             addmanagedby = token_managers

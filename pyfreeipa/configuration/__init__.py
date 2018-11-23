@@ -232,5 +232,6 @@ CONFIG['dryrun'] = ARGS.dryrun
 CONFIG['uid'] = ARGS.uid
 CONFIG['group'] = ARGS.group
 
-if not isinstance(CONFIG['otptoken']['managedby'], list):
-    CONFIG['otptoken']['managedby'] = [CONFIG['otptoken']['managedby']]
+if CONFIG['otptoken']['managedby']:
+    if not isinstance(CONFIG['otptoken']['managedby'], list):
+        CONFIG['otptoken']['managedby'] = [CONFIG['otptoken']['managedby']]
