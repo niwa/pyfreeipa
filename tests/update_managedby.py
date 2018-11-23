@@ -38,25 +38,115 @@ def main():
             if CONFIG['otptoken']['ownermanagedby']:
                 token_managers.append(token['ipatokenowner'][0])
 
-        if 'managedby_user' in token:
-            current_managers = token['managedby_user']
-            if set(current_managers) == set(token_managers):
-                state = 'Matches'
-            else:
-                state = 'No match'
-        else:
-            current_managers = []
-            state = "No managers"
+        addmanagedby = []
+        removemanagedby = []
+        currentmanagers = []
 
-        print(
-            "%s: %s current:%s expected:%s" %
-            (
-                state,
-                token['ipatokenuniqueid'][0],
-                current_managers,
-                token_managers
+        if 'managedby_user' in token:
+            currentmanagers = token['managedby_user']
+            for manager in token_managers:
+                if manager not in token['managedby_user']:
+                    addmanagedby.append(manager)
+
+            for manager in token['managedby_user']:
+                if manager not in token_managers:
+                    removemanagedby.append(manager)
+
+        else:
+            addmanagedby = token_managers
+
+        if CONFIG['dryrun']:
+            print(
+                "Token: %s Current: %s Proposed: %s Add: %s Remove: %s" %
+                (
+                    token['ipatokenuniqueid'][0],
+                    currentmanagers,
+                    token_managers,
+                    addmanagedby,
+                    removemanagedby
+                )
             )
-        )
+
+        if addmanagedby:
+            addresponse = ipaapi.otptoken_add_managedby(
+                token['ipatokenuniqueid'][0],
+                user=addmanagedby
+            )
+            if CONFIG['dryrun']:
+                print("DRY RUN")
+                prettyprintpost(addresponse)
+            else:
+                if addresponse.json()['error']:
+                    print(
+                        "ERROR: Failed to update %s" %
+                        token['ipatokenuniqueid'][0]
+                    )
+                    print(
+                        json.dumps(
+                            addresponse.json(),
+                            indent=4,
+                            sort_keys=True
+                        )
+                    )
+                else:
+                    print(
+                        "DONE: %s added %s" %
+                        (
+                            token['ipatokenuniqueid'][0],
+                            addmanagedby
+                        )
+                    )
+
+        if removemanagedby:
+            removeresponse = ipaapi.otptoken_remove_managedby(
+                token['ipatokenuniqueid'][0],
+                user=removemanagedby
+            )
+            if CONFIG['dryrun']:
+                print("DRY RUN")
+                prettyprintpost(removeresponse)
+            else:
+                if removeresponse.json()['error']:
+                    print(
+                        "ERROR: Failed to update %s" %
+                        token['ipatokenuniqueid'][0]
+                    )
+                    print(
+                        json.dumps(
+                            removeresponse.json(),
+                            indent=4,
+                            sort_keys=True
+                        )
+                    )
+                else:
+                    print(
+                        "DONE: %s removeded %s" %
+                        (
+                            token['ipatokenuniqueid'][0],
+                            removemanagedby
+                        )
+                    )
+
+
+
+def prettyprintpost(req):
+    """
+    At this point it is completely built and ready
+    to be fired; it is "prepared".
+
+    However pay attention at the formatting used in
+    this function because it is programmed to be pretty
+    printed and may differ from the actual request.
+    Brutally copypasted from: https://stackoverflow.com/a/23816211
+    """
+    jsonbody = json.loads(req.body)
+    body = json.dumps(jsonbody, indent=4, sort_keys=True)
+    print('{}\n{}\n{}\n\n{}'.format(
+        '-----------START-----------',
+        req.method + ' ' + req.url,
+        '\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+        body
+    ))
 
 
 if __name__ == "__main__":
