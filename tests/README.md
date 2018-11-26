@@ -32,11 +32,27 @@ python -m tests.otptoken_find --uid <uniqueid>
 
 *WARNING* This script makes changes to the FreeIPA directroy! *WARNING*
 
-This script requires that the account in the configuration file is either a member of the `admins` group in FreeIPA (i.e. is an Administrator), or that they are specified in the `managedBy` attributes of some/all of the otptokens in the FreeIPA directroy. If not, it will only update tokens that the configured user owns.
+This script requires that the account in the configuration file is either a member of the `admins` group in FreeIPA (i.e. is an Administrator), or that they are specified in the `managedBy` attributes of some/all of the otptokens in the FreeIPA directroy. If not, it will only update tokens that the configured user owns. Either use the `-f` argument to pass a configuration file with the appropriate credentials, or supply them with the `-u` and `-p` arguments.
 
 The `update_managedby` script is idempotent and will not update tokens that already match what's defined in the configuration file.
 
 The script checks an otptokens `managedBy` attributes against a list of proposed account UIDs and adds any UIDs from the list to the token's `managedBy` attributes, and removes any UIDs that are absent from the list.
+
+When the dry run (`-d`) argument is used, the script summarises the state of each token found, and the prepared request that would be submitted to update them.
+
+A normal run will summarise only those tokenas that were updated.
+
+### Usage
+
+To update a specific token:
+```
+python -m tests.update_managedby --uid <uniqueid>
+```
+
+To update all tokens the configured account can find:
+```
+python -m tests.update_managedby
+```
 
 ### Configuration
 
