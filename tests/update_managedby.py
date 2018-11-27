@@ -3,6 +3,7 @@ A generic wrapper script for the pyfreeipa Api class
 """
 import json
 import sys
+from datetime import datetime
 from pyfreeipa.Api import Api
 from pyfreeipa.configuration import CONFIG
 
@@ -13,6 +14,9 @@ def main():
 
     @return     { description_of_the_return_value }
     """
+    startTime = datetime.now()
+    updates = 0
+    unchanged = 0
 
     if CONFIG['command'] == 'dumpconfig':
         print(json.dumps(CONFIG, indent=4, sort_keys=True))
@@ -131,6 +135,17 @@ def main():
                         )
                     )
 
+        if removemanagedby or addmanagedby:
+            updates += 1
+        else:
+            unchanged += 1
+
+    print("Total tokens: %s" % len(tokens))
+    print("Token updates: %s" % updates)
+    print("Tokens unchanged: %s" % unchanged)
+
+    deltatime = datetime.now() - startTime
+    print("Elapsed time: %s" % str(deltatime))
 
 
 def prettyprintpost(req):
