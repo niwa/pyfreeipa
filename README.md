@@ -2,7 +2,7 @@
 
 Python module for accessing the FreeIPA/Red Hat Identity Manager API (a.k.a IPA)
 
-This module does not do any exception handling, it want's you to handle exceptions.
+This module does not do any exception handling, it wants your code to handle exceptions.
 
 # Usage
 
@@ -32,7 +32,7 @@ Included is a `configuration` method that can read all the required configuratio
 
 The `pyfreeipa` module itself can be executed as a wrapper script around `pyfreeipa.Api`
 
-There are also some test scripts that demonstrate it's capabilites in the `tests` directory, they have their own [documentation](tests/README.md).
+There are also some test scripts that demonstrate it's capabilites in the `test` directory, they have their own [documentation](tests/README.md).
 
 # FreeIPA API Methods
 
@@ -43,6 +43,14 @@ The `Api` object supports both implemented and unimplemented methods
 Unimplemented methods are supported via the `Api.request()` method:
 
 ```python
+from pyfreeipa.Api import Api
+
+ipaapi = Api(
+    host="ipa.example.org",
+    username="ipauser",
+    password="somethingsecret"
+)
+
 ipaapi.request(
     method='group_add_member',
     args=['groupname'],
@@ -65,14 +73,44 @@ The `Api` object has a some methods that do not directly relate to requests to t
 
 ## `login()`
 
+The IPA API login process that isn't standard HTTPS authentication, this method initiates the login and should be sufficient to maintain login througout a session.
+
 ## `get()`
+
+A passthrough function that sends a `GET` request to the IPA API session. Returns a `requests.response` object.
 
 ## `post()`
 
+A passthrough function that sends a `POST` request to the IPA API session. Returns a `requests.response` object.
+
 ## `put()`
+
+A passthrough function that sends a `PUT` request to the IPA API session. Returns a `requests.response` object.
 
 ## `request()`
 
+This function checks and verifies it's argments and converts regular string, dictionary, and list objects and converts them into the required data types to submit as a request, executes the request and returns a `requests.Response` object.
+
+### Parameters
+
+* `method` A the IPA API method to be called
+* `args` A list of arguments for the method
+* `params` A dictionary of parameters for the method
+
+## `preprequest()`
+
+This function checks and verifies it's argments and converts regular string, dictionary, and list objects and converts them into the required data types to submit as a request, executes the request and returns a `requests.PreparedRequest` object.
+
+### Parameters
+
+* `method` A the IPA API method to be called
+* `args` A list of arguments for the method
+* `params` A dictionary of parameters for the method
+
 ## `warnings`
 
+Emits a list of warnings that have occured.
+
 ## `clearwarnings()`
+
+Clears the warnings list.
