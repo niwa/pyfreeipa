@@ -1,5 +1,6 @@
 """
 Process command line arguments and/or load configuration file
+mostly used by the test scripts
 """
 import argparse
 import sys

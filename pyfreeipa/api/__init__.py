@@ -143,8 +143,8 @@ class Api:
             params=None
     ):
         """
-        @brief This cleans up the args and parameters posts the and handles the request
-        and returns the response
+        @brief This cleans up the args and parameters posts the and handles
+        the request and returns the response
 
         @param self This object
         @param method The FreeIPA API method to request
