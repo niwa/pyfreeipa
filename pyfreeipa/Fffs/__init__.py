@@ -1,15 +1,11 @@
 """
 { item_description }
 """
-# import sys
-# import urllib
 import json
 from typing import Union
 from datetime import datetime
 import requests
-# import pathlib
 import urllib3
-
 
 class Api:
     """
