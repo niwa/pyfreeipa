@@ -2,7 +2,6 @@
 Methods for users
 """
 from typing import Union
-import pyfreeipa.util
 
 def user(
         self,

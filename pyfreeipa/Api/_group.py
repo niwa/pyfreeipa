@@ -1,0 +1,278 @@
+"""
+Methods for groups
+"""
+from typing import Union
+
+
+def group(
+        self,
+        gid: str
+):
+    """
+    @brief      Returns only the group response
+
+    @param      self  The object
+    @param      gid   The gid of the group to return
+
+    @return     the group account as a dictionary
+    """
+
+    response = self.group_show(gid, allattrs=True)
+
+    if response.json()['result']:
+        return response.json()['result']['result']
+    else:
+        return None
+
+
+def groups(
+        self,
+        searchstring: Union[str, None]=None,
+        gid: Union[str, None]=None,
+        gidnumber: Union[int, None]=None,
+        in_group: Union[str, list, None]=None,
+        mail: Union[str, list, None]=None,
+):
+    """
+    @brief      Given a some search parameters find all the group acounts that match
+
+    @param      self          The object
+    @param      searchstring  The searchstring used on any otptoken attribute
+    @param      uniqueid      substring used to match otptoken uniqueid
+    @param      owner         search for tokens owned but specified group
+
+    @return     { description_of_the_return_value }
+    """
+
+    response = self.group_find(
+        searchstring=searchstring,
+        gid=gid,
+        gidnumber=gidnumber,
+        in_group=in_group,
+        mail=mail,
+        allattrs=True
+    )
+
+    if response.json()['result']:
+        return response.json()['result']['result']
+    else:
+        return []
+
+
+def grouplist(
+        self,
+        groups: Union[str, list, None]=None
+):
+    """
+    @brief      Given a list of gids and/or groups, return a list of groupnames that match or are members
+
+    @param      self          The object
+    @param      searchstring  The searchstring used on any otptoken attribute
+    @param      uniqueid      substring used to match otptoken uniqueid
+    @param      owner         search for tokens owned but specified group
+
+    @return     { description_of_the_return_value }
+    """
+
+    grouplist = []
+
+    if groups:
+        if isinstance(groups, list):
+            for groupname in groups:
+                response = self.groups(in_group=groupname)
+                for group in response:
+                    grouplist.append(group['gid'][0])
+        else:
+            response = self.groups(in_group=groups)
+            for group in response:
+                grouplist.append(group['gid'][0])
+    else:
+        for group in self.groups():
+            grouplist.append(group['gid'][0])
+
+    return sorted(set(grouplist))
+
+
+def group_show(
+        self,
+        gid: str,
+        no_members: Union[bool, None]=None,
+        rights: Union[bool, None]=None,
+        allattrs: Union[bool, None]=None,
+        raw: Union[bool, None]=None
+):
+    """
+    @brief      A complete implementation of the group_show command
+
+    @param      self  The object
+
+    @param      gid of the group to be shown
+
+    @param      rights, if true, displays the access rights of this group
+
+    @param      all, retrieves all attributes
+
+    @param      raw, returns the raw response, only changes output format
+
+    @return     the requests.Response from the ping request
+    """
+
+    method = 'group_show'
+
+    args = gid
+
+    params = {}
+
+    if rights is not None:
+        params['rights'] = rights
+
+    if allattrs is not None:
+        params['all'] = allattrs
+
+    if raw is not None:
+        params['raw'] = raw
+
+    if no_members is not None:
+        params['no_members'] = no_members
+
+    return self.request(
+        method,
+        args=args,
+        params=params
+    )
+
+
+def group_find(
+        self,
+        searchstring: Union[str, None]=None,
+        cn: Union[str, None]=None,
+        gidnumber: Union[int, None]=None,
+        private: Union[bool, None]=None,
+        posix: Union[bool, None]=None,
+        external: Union[bool, None]=None,
+        nonposix: Union[bool, None]=None,
+        user: Union[str, list, None]=None,
+        no_user: Union[str, list, None]=None,
+        group: Union[str, list, None]=None,
+        no_group: Union[str, list, None]=None,
+        in_group: Union[str, list, None]=None,
+        not_in_group: Union[str, list, None]=None,
+        in_netgroup: Union[str, list, None]=None,
+        not_in_netgroup: Union[str, list, None]=None,
+        in_role: Union[str, list, None]=None,
+        not_in_role: Union[str, list, None]=None,
+        in_hbacrule: Union[str, list, None]=None,
+        not_in_hbacrule: Union[str, list, None]=None,
+        in_sudorule: Union[str, list, None]=None,
+        not_in_sudorule: Union[str, list, None]=None,
+        no_members: Union[bool, None]=None,
+        rights: Union[bool, None]=None,
+        allattrs: Union[bool, None]=None,
+        raw: Union[bool, None]=None,
+        pkey_only: Union[bool, None]=None
+):
+    """
+    @brief      A partial implementation of the group_find request
+
+    @param      self  The object
+
+    @param      gid of the group to be shown
+
+    @param      rights, if true, displays the access rights of this group
+
+    @param      all, retrieves all attributes
+
+    @param      raw, returns the raw response, only changes output format
+
+    @return     the requests.Response from the ping request
+    """
+
+    method = 'group_find'
+
+    args = None
+
+    if searchstring:
+        args = searchstring
+
+    params = {}
+
+    if cn is not None:
+        params['cn'] = cn
+
+    if gidnumber is not None:
+        params['gidnumber'] = gidnumber
+
+    if private is not None:
+        params['private'] = private
+
+    if posix is not None:
+        params['posix'] = posix
+
+    if external is not None:
+        params['external'] = external
+
+    if nonposix is not None:
+        params['nonposix'] = nonposix
+
+    if user is not None:
+        params['user'] = user
+
+    if no_user is not None:
+        params['no_user'] = no_user
+
+    if group is not None:
+        params['group'] = group
+
+    if no_group is not None:
+        params['no_group'] = no_group
+
+    if in_group is not None:
+        params['in_group'] = in_group
+
+    if not_in_group is not None:
+        params['not_in_group'] = not_in_group
+
+    if in_netgroup is not None:
+        params['in_netgroup'] = in_netgroup
+
+    if not_in_netgroup is not None:
+        params['not_in_netgroup'] = not_in_netgroup
+
+    if in_role is not None:
+        params['in_role'] = in_role
+
+    if not_in_role is not None:
+        params['not_in_role'] = not_in_role
+
+    if in_hbacrule is not None:
+        params['in_hbacrule'] = in_hbacrule
+
+    if not_in_hbacrule is not None:
+        params['not_in_hbacrule'] = not_in_hbacrule
+
+    if in_sudorule is not None:
+        params['in_sudorule'] = in_sudorule
+
+    if not_in_sudorule is not None:
+        params['not_in_sudorule'] = not_in_sudorule
+
+    if no_members is not None:
+        params['no_members'] = no_members
+
+    if rights is not None:
+        params['rights'] = rights
+
+    if allattrs is not None:
+        params['all'] = allattrs
+
+    if raw is not None:
+        params['raw'] = raw
+
+    if pkey_only is not None:
+        params['pkey_only'] = pkey_only
+
+    return self.request(
+        method,
+        args=args,
+        params=params
+    )

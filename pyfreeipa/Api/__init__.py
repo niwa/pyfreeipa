@@ -15,6 +15,7 @@ class Api:
     """
     # Import local methods
     from ._user import user_show, user_find, user, users, userlist
+    from ._group import group_show, group_find, group, groups, grouplist
 
     def __init__(
             self,
