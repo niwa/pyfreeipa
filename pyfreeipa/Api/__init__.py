@@ -14,7 +14,7 @@ class Api:
     @brief      Class for api connection to an IPA server.
     """
     # Import local methods
-    from ._user import user_show, user_find, user, users, user_list
+    from ._user import user_show, user_find, user, users, userlist
 
     def __init__(
             self,
