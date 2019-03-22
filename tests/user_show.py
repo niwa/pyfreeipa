@@ -30,24 +30,21 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
-    if CONFIG['uid']:
-        response = ipaapi.user_show(
-            CONFIG['uid']
-        )
-        user = ipaapi.user(CONFIG['uid'])
+    if CONFIG['users']:
+        if len(CONFIG['users']) == 1:
+            response = ipaapi.user_show(
+                CONFIG['users'][0]
+            )
+        else:
+            sys.exit("Requires a single uid/username specified with --uid")
     else:
-        print("Requires an account uid/username specified with --uid")
-        sys.exit(1)
+        sys.exit("Requires an account uid/username specified with --uid")
 
     print("The request:")
     print(response.request.body)
 
     print("Raw response:")
     print(json.dumps(response.json(), indent=4, sort_keys=True))
-
-    print("Response as a dict:")
-    print(json.dumps(user, indent=4, sort_keys=True))
-
 
 if __name__ == "__main__":
     main()

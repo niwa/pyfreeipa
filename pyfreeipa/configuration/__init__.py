@@ -87,7 +87,10 @@ def do_args():
         type=str,
         nargs='+',
         dest='uid',
-        help="Passes a unique identifier, such as a uid of a user, or the uniqueid of an otptoken. Multiple uids can be specified."
+        help=(
+            "Passes a unique identifier, such as a uid of a user,"
+            "or the uniqueid of an otptoken. Multiple uids can be specified."
+        )
     )
 
     parser.add_argument(
@@ -230,8 +233,29 @@ if not os.path.isfile(ARGS.file):
 # Set state from command line
 CONFIG['command'] = ARGS.command
 CONFIG['dryrun'] = ARGS.dryrun
-CONFIG['uid'] = ARGS.uid
-CONFIG['group'] = ARGS.group
+CONFIG['groups'] = None
+if ARGS.group:
+    cleangroups = []
+    for group in ARGS.group:
+        if ',' in group:
+            for splitgroup in group.split(','):
+                cleangroups.append(splitgroup)
+        else:
+            cleangroups.append(group)
+
+    CONFIG['groups'] = sorted(set(cleangroups))
+
+CONFIG['users'] = None
+if ARGS.uid:
+    cleanusers = []
+    for user in ARGS.uid:
+        if ',' in user:
+            for splituser in user.split(','):
+                cleanusers.append(splituser)
+        else:
+            cleanusers.append(user)
+
+    CONFIG['users'] = sorted(set(cleanusers))
 
 if CONFIG['otptoken']['managedby']:
     if not isinstance(CONFIG['otptoken']['managedby'], list):
