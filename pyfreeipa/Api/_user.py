@@ -59,7 +59,7 @@ def users(
         return []
 
 
-def user_list(
+def userlist(
         self,
         uids: Union[str, list, None]=None,
         groups: Union[str, list, None]=None

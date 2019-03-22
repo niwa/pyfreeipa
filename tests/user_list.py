@@ -33,16 +33,16 @@ def main():
 
     starttime = datetime.now()
     if CONFIG['users'] and CONFIG['groups']:
-        users = ipaapi.user_list(
+        users = ipaapi.userlist(
             uids=CONFIG['users'],
             groups=CONFIG['groups']
         )
     elif CONFIG['users']:
-        users = ipaapi.user_list(uids=CONFIG['users'])
+        users = ipaapi.userlist(uids=CONFIG['users'])
     elif CONFIG['groups']:
-        users = ipaapi.user_list(groups=CONFIG['groups'])
+        users = ipaapi.userlist(groups=CONFIG['groups'])
     else:
-        users = ipaapi.user_list()
+        users = ipaapi.userlist()
 
     deltatime = datetime.now() - starttime
 
