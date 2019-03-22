@@ -33,40 +33,23 @@ def main():
 
     starttime = datetime.now()
     if CONFIG['users'] and CONFIG['groups']:
-        response = ipaapi.user_find(
-            uid=CONFIG['users'],
-            in_group=CONFIG['groups']
-        )
-        users = ipaapi.users(
-            uid=CONFIG['users'],
-            in_group=CONFIG['groups']
+        users = ipaapi.user_list(
+            uids=CONFIG['users'],
+            groups=CONFIG['groups']
         )
     elif CONFIG['users']:
-        response = ipaapi.user_find(
-            CONFIG['users']
-        )
-        users = ipaapi.users(CONFIG['users'])
+        users = ipaapi.user_list(uids=CONFIG['users'])
     elif CONFIG['groups']:
-        response = ipaapi.user_find(
-            in_group=CONFIG['groups']
-        )
-        users = ipaapi.users(in_group=CONFIG['groups'])
+        users = ipaapi.user_list(groups=CONFIG['groups'])
     else:
-        response = ipaapi.user_find()
-        users = ipaapi.users()
+        users = ipaapi.user_list()
+
     deltatime = datetime.now() - starttime
-
-    print("The request")
-    print(response.request.body)
-
-    print("Raw response:")
-    print(json.dumps(response.json(), indent=4, sort_keys=True))
 
     print("Response as a list object:")
     print(json.dumps(users, indent=4, sort_keys=True))
-
+    print("Number of users: %s" % len(users))
     print("Elapsed time for query: %s" % deltatime)
-
 
 if __name__ == "__main__":
     main()

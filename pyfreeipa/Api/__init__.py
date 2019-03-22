@@ -6,7 +6,7 @@ from typing import Union
 from datetime import datetime
 import requests
 import urllib3
-import pyspectumscale.util
+import pyfreeipa.util
 
 
 class Api:
@@ -14,7 +14,7 @@ class Api:
     @brief      Class for api connection to an IPA server.
     """
     # Import local methods
-    from ._user import user_show
+    from ._user import user_show, user_find, user, users, user_list
 
     def __init__(
             self,
@@ -644,59 +644,6 @@ class Api:
             searchstring=searchstring,
             uniqueid=uniqueid,
             owner=owner,
-            allattrs=True
-        )
-
-        if response.json()['result']:
-            return response.json()['result']['result']
-        else:
-            return []
-
-    def user(
-            self,
-            uid: str
-    ):
-        """
-        @brief      { function_description }
-
-        @param      self  The object
-        @param      uid   The uid of the user to return
-
-        @return     the user account as a dictionary
-        """
-
-        response = self.user_show(uid, allattrs=True)
-
-        if response.json()['result']:
-            return response.json()['result']['result']
-        else:
-            return None
-
-    def users(
-            self,
-            searchstring: Union[str, None]=None,
-            uid: Union[str, None]=None,
-            uidnumber: Union[int, None]=None,
-            in_group: Union[str, list, None]=None,
-            mail: Union[str, list, None]=None,
-    ):
-        """
-        @brief      { function_description }
-
-        @param      self          The object
-        @param      searchstring  The searchstring used on any otptoken attribute
-        @param      uniqueid      substring used to match otptoken uniqueid
-        @param      owner         search for tokens owned but specified user
-
-        @return     { description_of_the_return_value }
-        """
-
-        response = self.user_find(
-            searchstring=searchstring,
-            uid=uid,
-            uidnumber=uidnumber,
-            in_group=in_group,
-            mail=mail,
             allattrs=True
         )
 
