@@ -30,11 +30,11 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
-    if CONFIG['uid']:
+    if CONFIG['users']:
         response = ipaapi.otptoken_show(
-            CONFIG['uid']
+            CONFIG['users']
         )
-        token = ipaapi.otptoken(CONFIG['uid'])
+        token = ipaapi.otptoken(CONFIG['users'])
     else:
         print("Requires a otptoken uniqueid specified with --uid")
         sys.exit(1)

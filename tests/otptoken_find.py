@@ -30,11 +30,11 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
-    if CONFIG['uid']:
+    if CONFIG['users']:
         response = ipaapi.otptoken_find(
-            CONFIG['uid']
+            CONFIG['users']
         )
-        tokens = ipaapi.otptokens(CONFIG['uid'])
+        tokens = ipaapi.otptokens(CONFIG['users'])
     else:
         response = ipaapi.otptoken_find()
         tokens = ipaapi.otptokens()
