@@ -6,18 +6,18 @@ from typing import Union
 
 def group(
         self,
-        gid: str
+        cn: str
 ):
     """
     @brief      Returns only the group response
 
     @param      self  The object
-    @param      gid   The gid of the group to return
+    @param      cn   The cn of the group to return
 
     @return     the group account as a dictionary
     """
 
-    response = self.group_show(gid, allattrs=True)
+    response = self.group_show(cn, allattrs=True)
 
     if response.json()['result']:
         return response.json()['result']['result']
@@ -28,10 +28,9 @@ def group(
 def groups(
         self,
         searchstring: Union[str, None]=None,
-        gid: Union[str, None]=None,
+        cn: Union[str, None]=None,
         gidnumber: Union[int, None]=None,
-        in_group: Union[str, list, None]=None,
-        mail: Union[str, list, None]=None,
+        in_group: Union[str, list, None]=None
 ):
     """
     @brief      Given a some search parameters find all the group acounts that match
@@ -46,10 +45,9 @@ def groups(
 
     response = self.group_find(
         searchstring=searchstring,
-        gid=gid,
+        cn=cn,
         gidnumber=gidnumber,
         in_group=in_group,
-        mail=mail,
         allattrs=True
     )
 
@@ -79,23 +77,29 @@ def grouplist(
     if groups:
         if isinstance(groups, list):
             for groupname in groups:
+                response = self.group(groupname)
+                if response:
+                    grouplist.append(groupname)
                 response = self.groups(in_group=groupname)
                 for group in response:
-                    grouplist.append(group['gid'][0])
+                    grouplist.append(group['cn'][0])
         else:
+            response = self.group(groupname)
+            if response:
+                grouplist.append(groupname)
             response = self.groups(in_group=groups)
             for group in response:
-                grouplist.append(group['gid'][0])
+                grouplist.append(group['cn'][0])
     else:
         for group in self.groups():
-            grouplist.append(group['gid'][0])
+            grouplist.append(group['cn'][0])
 
     return sorted(set(grouplist))
 
 
 def group_show(
         self,
-        gid: str,
+        cn: str,
         no_members: Union[bool, None]=None,
         rights: Union[bool, None]=None,
         allattrs: Union[bool, None]=None,
@@ -106,7 +110,7 @@ def group_show(
 
     @param      self  The object
 
-    @param      gid of the group to be shown
+    @param      cn of the group to be shown
 
     @param      rights, if true, displays the access rights of this group
 
@@ -119,7 +123,7 @@ def group_show(
 
     method = 'group_show'
 
-    args = gid
+    args = cn
 
     params = {}
 
