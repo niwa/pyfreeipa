@@ -2,6 +2,7 @@
 Methods for users
 """
 from typing import Union
+from ._utils import delist, listdelist
 
 def user(
         self,
@@ -16,12 +17,13 @@ def user(
     @return     the user account as a dictionary
     """
 
+    user = None
     response = self.user_show(uid, allattrs=True)
 
     if response.json()['result']:
-        return response.json()['result']['result']
-    else:
-        return None
+        user = delist(response.json()['result']['result'])
+
+    return user
 
 
 def users(
@@ -52,10 +54,12 @@ def users(
         allattrs=True
     )
 
+    userlist = []
+
     if response.json()['result']:
-        return response.json()['result']['result']
-    else:
-        return []
+        userlist = listdelist(response.json()['result']['result'])
+
+    return userlist
 
 
 def userlist(

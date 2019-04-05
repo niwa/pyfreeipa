@@ -2,6 +2,7 @@
 Methods for groups
 """
 from typing import Union
+from ._utils import delist, listdelist
 
 
 def group(
@@ -17,12 +18,13 @@ def group(
     @return     the group account as a dictionary
     """
 
+    group = None
     response = self.group_show(cn, allattrs=True)
 
     if response.json()['result']:
-        return response.json()['result']['result']
-    else:
-        return None
+        group = delist(response.json()['result']['result'])
+
+    return group
 
 
 def groups(
@@ -43,6 +45,7 @@ def groups(
     @return     { description_of_the_return_value }
     """
 
+    grouplist = []
     response = self.group_find(
         searchstring=searchstring,
         cn=cn,
@@ -52,9 +55,9 @@ def groups(
     )
 
     if response.json()['result']:
-        return response.json()['result']['result']
-    else:
-        return []
+        grouplist = listdelist(response.json()['result']['result'])
+
+    return grouplist
 
 
 def grouplist(
