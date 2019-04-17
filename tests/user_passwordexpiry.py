@@ -3,6 +3,7 @@ A generic wrapper script for the pyfreeipa Api class
 """
 import json
 import sys
+from datetime import datetime
 from pyfreeipa.Api import Api
 from pyfreeipa.configuration import CONFIG
 
@@ -30,24 +31,24 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
+    starttime = datetime.now()
     if CONFIG['users']:
-        response = ipaapi.otptoken_show(
-            CONFIG['users']
-        )
-        token = ipaapi.otptoken(CONFIG['users'])
+        if len(CONFIG['users']) == 1:
+            response = ipaapi.user_getattr(
+                uid=CONFIG['users'][0],
+                attribute='krbpasswordexpiration'
+            )
+        else:
+            sys.exit("Requires a single uid/username specified with --uid")
     else:
-        print("Requires a otptoken uniqueid specified with --uid")
-        sys.exit(1)
+        sys.exit("Requires an account uid/username specified with --uid")
+    deltatime = datetime.now() - starttime
 
-    print("The request:")
-    print(response.request.body)
 
-    print("Raw response:")
-    print(json.dumps(response.json(), indent=2, sort_keys=True))
+    print("The Response:")
+    print(response)
 
-    print("Token as a dict object:")
-    print(json.dumps(token, indent=2, sort_keys=True, default=str))
-
+    print("Elapsed time for query: %s" % deltatime)
 
 if __name__ == "__main__":
     main()

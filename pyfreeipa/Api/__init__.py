@@ -13,7 +13,7 @@ class Api:
     @brief      Class for api connection to an IPA server.
     """
     # Import local methods
-    from ._user import user_show, user_find, user, users, userlist
+    from ._user import user_show, user_find, user, users, userlist, user_getattr
     from ._group import group_show, group_find, group, groups, grouplist
     from ._otptoken import otptoken_find, otptoken_show
 

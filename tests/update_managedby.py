@@ -19,7 +19,7 @@ def main():
     unchanged = 0
 
     if CONFIG['command'] == 'dumpconfig':
-        print(json.dumps(CONFIG, indent=4, sort_keys=True))
+        print(json.dumps(CONFIG, indent=2, sort_keys=True))
         sys.exit(0)
 
     # Define API session
@@ -92,7 +92,7 @@ def main():
                     print(
                         json.dumps(
                             addresponse.json(),
-                            indent=4,
+                            indent=2,
                             sort_keys=True
                         )
                     )
@@ -122,7 +122,7 @@ def main():
                     print(
                         json.dumps(
                             removeresponse.json(),
-                            indent=4,
+                            indent=2,
                             sort_keys=True
                         )
                     )
@@ -159,7 +159,7 @@ def prettyprintpost(req):
     Brutally copypasted from: https://stackoverflow.com/a/23816211
     """
     jsonbody = json.loads(req.body)
-    body = json.dumps(jsonbody, indent=4, sort_keys=True)
+    body = json.dumps(jsonbody, indent=2, sort_keys=True)
     print('{}\n{}\n{}\n\n{}'.format(
         '-----------START-----------',
         req.method + ' ' + req.url,

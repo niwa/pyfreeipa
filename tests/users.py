@@ -4,7 +4,6 @@ A generic wrapper script for the pyfreeipa Api class
 import json
 import pprint
 import sys
-from datetime import datetime
 from pyfreeipa.Api import Api
 from pyfreeipa.configuration import CONFIG
 
@@ -15,10 +14,10 @@ def main():
 
     @return     { description_of_the_return_value }
     """
-    pp = pprint.PrettyPrinter(indent=4)
+    pp = pprint.PrettyPrinter(indent=2)
 
     if CONFIG['command'] == 'dumpconfig':
-        print(json.dumps(CONFIG, indent=4, sort_keys=True))
+        print(json.dumps(CONFIG, indent=2, sort_keys=True))
         sys.exit(0)
 
     # Define API session

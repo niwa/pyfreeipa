@@ -1,6 +1,7 @@
 """
 Some common utilities for the API
 """
+from datetime import datetime
 from typing import List
 
 
@@ -17,11 +18,20 @@ def delist(
     @return     a dictionary with no single element lists
     """
     cleandict = {}
+    timeformat = '%Y%m%d%H%M%SZ'
     for key in thedict:
         cleandict[key] = thedict[key]
         if isinstance(thedict[key], list):
             if len(thedict[key]) == 1:
                 cleandict[key] = thedict[key][0]
+
+        # Convert serialised datetime dicts back into a datetime object
+        if isinstance(cleandict[key], dict):
+            if '__datetime__' in cleandict[key]:
+                cleandict[key] = datetime.strptime(
+                    cleandict[key]['__datetime__'],
+                    timeformat
+                )
 
     return cleandict
 

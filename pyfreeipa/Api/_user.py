@@ -1,6 +1,7 @@
 """
 Methods for users
 """
+from datetime import datetime
 from typing import Union
 from ._utils import delist, listdelist
 
@@ -214,3 +215,18 @@ def user_find(
         args=args,
         params=params
     )
+
+
+def user_getattr(
+        self,
+        uid: type=str,
+        attribute: type=str
+):
+    user = self.user(uid=uid)
+
+    attributevalue = None
+
+    if attribute in user:
+        attributevalue = user[attribute]
+
+    return attributevalue

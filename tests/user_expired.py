@@ -16,7 +16,7 @@ def main():
     """
 
     if CONFIG['command'] == 'dumpconfig':
-        print(json.dumps(CONFIG, indent=4, sort_keys=True))
+        print(json.dumps(CONFIG, indent=2, sort_keys=True))
         sys.exit(0)
 
     # Define API session
@@ -31,33 +31,29 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
-    if CONFIG['uid'] and CONFIG['group']:
+    if CONFIG['users'] and CONFIG['groups']:
         users = ipaapi.users(
-            uid=CONFIG['uid'],
-            in_group=CONFIG['group']
+            uid=CONFIG['users'],
+            in_group=CONFIG['groups']
         )
-    elif CONFIG['uid']:
-        users = ipaapi.users(CONFIG['uid'])
-    elif CONFIG['group']:
-        users = ipaapi.users(in_group=CONFIG['group'])
+    elif CONFIG['users']:
+        users = ipaapi.users(CONFIG['users'])
+    elif CONFIG['groups']:
+        users = ipaapi.users(in_group=CONFIG['groups'])
     else:
         users = ipaapi.users()
 
     today = datetime.date.today()
     margin = datetime.timedelta(days=7)
     inaweek = today + margin
-    timeformat = '%Y%m%d%H%M%SZ'
     expiringusers = []
 
     for user in users:
         if 'krbpasswordexpiration' in user:
-            expiry = datetime.datetime.strptime(
-                user['krbpasswordexpiration'][0]['__datetime__'],
-                timeformat
-            )
+            expiry = user['krbpasswordexpiration']
             if isinstance(expiry, datetime.datetime):
                 if today <= expiry.date() <= inaweek:
-                    expiringusers.append(user['uid'][0])
+                    expiringusers.append(user['uid'])
 
     print("Users with passwords expiring this week: %s" % expiringusers)
 

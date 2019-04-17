@@ -16,7 +16,7 @@ def main():
     """
 
     if CONFIG['command'] == 'dumpconfig':
-        print(json.dumps(CONFIG, indent=4, sort_keys=True))
+        print(json.dumps(CONFIG, indent=2, sort_keys=True))
         sys.exit(0)
 
     # Define API session
@@ -50,10 +50,10 @@ def main():
     print(response.request.body)
 
     print("Raw response:")
-    print(json.dumps(response.json(), indent=4, sort_keys=True))
+    print(json.dumps(response.json(), indent=2, sort_keys=True))
 
     print("Response as a dict:")
-    print(json.dumps(user, indent=4, sort_keys=True))
+    print(json.dumps(user, indent=2, sort_keys=True, default=str))
     print("Elapsed time for query: %s" % deltatime)
 
 if __name__ == "__main__":

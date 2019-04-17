@@ -16,7 +16,7 @@ def main():
     """
 
     if CONFIG['command'] == 'dumpconfig':
-        print(json.dumps(CONFIG, indent=4, sort_keys=True))
+        print(json.dumps(CONFIG, indent=2, sort_keys=True))
         sys.exit(0)
 
     # Define API session
@@ -40,7 +40,7 @@ def main():
     deltatime = datetime.now() - starttime
 
     print("Response as a list object:")
-    print(json.dumps(groups, indent=4, sort_keys=True))
+    print(json.dumps(groups, indent=2, sort_keys=True, default=str))
     print("Number of groups: %s" % len(groups))
     print("Elapsed time for query: %s" % deltatime)
 
