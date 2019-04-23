@@ -3,6 +3,7 @@ Methods for otptokens
 otp - one time password, used for two factor & multifactor authentication.
 """
 from typing import Union
+from datetime import datetime
 
 
 def otptoken_find(
