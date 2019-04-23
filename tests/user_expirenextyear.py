@@ -45,23 +45,45 @@ def main():
 
     today = datetime.date.today()
     nextmonth = today.replace(month=(today.month + 1), day=1, year=(today.year + 1))
-    expiringusers = []
+    expiringusers = {}
 
     for user in users:
         if 'krbpasswordexpiration' in user:
             expiry = user['krbpasswordexpiration']
             if isinstance(expiry, datetime.datetime):
                 if today <= expiry.date() <= nextmonth:
-                    expiringusers.append(user['uid'])
+                    theday = expiry.day
+                    if theday > 28 and expiry.month == 2:
+                        theday = 28
+                    newexpiry = expiry.replace(year=(expiry.year + 1), day=theday)
+                    expiringusers[user['uid']] = {
+                        'expiry': expiry,
+                        'newexpiry': newexpiry
+                    }
 
-    print("Users with passwords expiring between %s and %s: %s" %
+    print("Users with passwords expiring between %s and %s:\n%s" %
         (
             str(today),
             str(nextmonth),
-            expiringusers
+            json.dumps(expiringusers, indent=2, sort_keys=True, default=str)
         )
     )
     print("Total expiring users: %s" % len(expiringusers))
+
+    responses = []
+
+    for user in expiringusers:
+        response = ipaapi.user_mod(
+            user,
+            krbpasswordexpiration=expiringusers[user]['newexpiry']
+        )
+
+        if CONFIG['dryrun']:
+            responses.append(response.body)
+        else:
+            responses.append(response.json())
+
+    print(json.dumps(responses, indent=2, sort_keys=True, default=str))
 
 
 if __name__ == "__main__":

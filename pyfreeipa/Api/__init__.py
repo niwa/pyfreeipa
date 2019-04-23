@@ -20,7 +20,7 @@ class Api:
         users,
         userlist,
         user_getattr,
-        user_setattr
+        user_mod
     )
     from ._group import (
         group_show,
@@ -197,7 +197,7 @@ class Api:
 
         response = self.post(
             self._sessionurl,
-            data=json.dumps(data)
+            data=json.dumps(data, default=str)
         )
 
         return response
@@ -239,7 +239,7 @@ class Api:
         request = requests.Request(
             'POST',
             self._sessionurl,
-            data=json.dumps(data)
+            data=json.dumps(data, default=str)
         )
 
         return self._session.prepare_request(request)
@@ -309,5 +309,3 @@ class Api:
         @return     the requests.Response from the whoami request
         """
         return self.request('whoami')
-
-
