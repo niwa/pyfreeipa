@@ -66,9 +66,14 @@ def main():
     print("Gathered %s users" % len(users))
 
     today = datetime.date.today()
+    themonth = today.month + 1
+    theyear = today.year + 1
+    if themonth > 12:
+        themonth = themonth - 12
+        theyear = theyear + 1
     nextmonth = today.replace(
-        year=(today.year + 1),
-        month=(today.month + 1),
+        year=theyear,
+        month=themonth,
         day=1
     )
     expiringusers = {}
@@ -79,11 +84,16 @@ def main():
             if isinstance(expiry, datetime.datetime):
                 if today <= expiry.date() <= nextmonth:
                     theday = expiry.day
-                    if theday > 28 and expiry.month == 2:
+                    if theday > 28:
                         theday = 28
+                    themonth = expiry.month + 1
+                    theyear = expiry.year + 1
+                    if themonth > 12:
+                        themonth = themonth - 12
+                        theyear = theyear + 1
                     newexpiry = expiry.replace(
-                        year=(expiry.year + 1),
-                        month=(expiry.month + 1),
+                        year=theyear,
+                        month=themonth,
                         day=theday
                     )
                     expiringusers[user['uid']] = {
