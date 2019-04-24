@@ -31,20 +31,46 @@ def main():
         dryrun=CONFIG['dryrun']
     )
 
+    users = []
+
     if CONFIG['users'] and CONFIG['groups']:
-        users = ipaapi.users(
-            uid=CONFIG['users'],
-            in_group=CONFIG['groups']
-        )
+        if isinstance(CONFIG['groups'], list):
+            for group in CONFIG['groups']:
+                someusers = ipaapi.users(
+                    uid=CONFIG['users'],
+                    in_group=group
+                )
+                users = users + someusers
+        else:
+            users = ipaapi.users(
+                uid=CONFIG['users'],
+                in_group=CONFIG['groups']
+            )
     elif CONFIG['users']:
         users = ipaapi.users(CONFIG['users'])
     elif CONFIG['groups']:
-        users = ipaapi.users(in_group=CONFIG['groups'])
+        if isinstance(CONFIG['groups'], list):
+            for group in CONFIG['groups']:
+                someusers = ipaapi.users(
+                    uid=CONFIG['users'],
+                    in_group=group
+                )
+                users = users + someusers
+        else:
+            users = ipaapi.users(in_group=CONFIG['groups'])
     else:
         users = ipaapi.users()
 
+    users = list({v['uid']: v for v in users}.values())
+
+    print("Gathered %s users" % len(users))
+
     today = datetime.date.today()
-    nextmonth = today.replace(month=(today.month + 1), day=1, year=(today.year + 1))
+    nextmonth = today.replace(
+        year=(today.year + 1),
+        month=(today.month + 1),
+        day=1
+    )
     expiringusers = {}
 
     for user in users:
@@ -55,20 +81,25 @@ def main():
                     theday = expiry.day
                     if theday > 28 and expiry.month == 2:
                         theday = 28
-                    newexpiry = expiry.replace(year=(expiry.year + 1), day=theday)
+                    newexpiry = expiry.replace(
+                        year=(expiry.year + 1),
+                        month=(expiry.month + 1),
+                        day=theday
+                    )
                     expiringusers[user['uid']] = {
                         'expiry': expiry,
                         'newexpiry': newexpiry
                     }
 
-    print("Users with passwords expiring between %s and %s:\n%s" %
-        (
-            str(today),
-            str(nextmonth),
-            json.dumps(expiringusers, indent=2, sort_keys=True, default=str)
+    if CONFIG['dryrun']:
+        print("Users with passwords expiring between %s and %s:\n%s" %
+            (
+                str(today),
+                str(nextmonth),
+                json.dumps(expiringusers, indent=2, sort_keys=True, default=str)
+            )
         )
-    )
-    print("Total expiring users: %s" % len(expiringusers))
+        print("Total expiring users: %s" % len(expiringusers))
 
     responses = []
 
@@ -78,13 +109,33 @@ def main():
             krbpasswordexpiration=expiringusers[user]['newexpiry']
         )
 
-        if CONFIG['dryrun']:
-            responses.append(response.body)
-        else:
-            responses.append(response.json())
+        responses.append(response)
 
-    print(json.dumps(responses, indent=2, sort_keys=True, default=str))
+    if CONFIG['dryrun']:
+        for modresponse in responses:
+            prettyprintpost(modresponse)
+    else:
+        print(json.dumps(responses, indent=2, sort_keys=True, default=str))
 
+
+def prettyprintpost(req):
+    """
+    At this point it is completely built and ready
+    to be fired; it is "prepared".
+
+    However pay attention at the formatting used in
+    this function because it is programmed to be pretty
+    printed and may differ from the actual request.
+    Brutally copypasted from: https://stackoverflow.com/a/23816211
+    """
+    jsonbody = json.loads(req.body)
+    body = json.dumps(jsonbody, indent=2, sort_keys=True)
+    print('{}\n{}\n{}\n\n{}'.format(
+        '-----------START-----------',
+        req.method + ' ' + req.url,
+        '\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+        body
+    ))
 
 if __name__ == "__main__":
     main()
