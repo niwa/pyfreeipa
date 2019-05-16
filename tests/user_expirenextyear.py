@@ -63,8 +63,6 @@ def main():
 
     users = list({v['uid']: v for v in users}.values())
 
-    print("Gathered %s users" % len(users))
-
     today = datetime.date.today()
     themonth = today.month + 1
     theyear = today.year + 1
@@ -77,9 +75,12 @@ def main():
         day=1
     )
     expiringusers = {}
+    havepassword = 0
+    nopassword = 0
 
     for user in users:
         if 'krbpasswordexpiration' in user:
+            havepassword += 1
             expiry = user['krbpasswordexpiration']
             if isinstance(expiry, datetime.datetime):
                 if today <= expiry.date() <= nextmonth:
@@ -100,16 +101,28 @@ def main():
                         'expiry': expiry,
                         'newexpiry': newexpiry
                     }
+        else:
+            nopassword += 1
+
+    print("Gathered %s users" % len(users))
+    print("Users with password: %s" % havepassword)
+    print("Users without password: %s" % nopassword)
+    print("Total expiring users: %s\n" % len(expiringusers))
 
     if CONFIG['dryrun']:
-        print("Users with passwords expiring between %s and %s:\n%s" %
+        print(
+            "Users with passwords expiring between %s and %s:\n%s" %
             (
                 str(today),
                 str(nextmonth),
-                json.dumps(expiringusers, indent=2, sort_keys=True, default=str)
+                json.dumps(
+                    expiringusers,
+                    indent=2,
+                    sort_keys=True,
+                    default=str
+                )
             )
         )
-        print("Total expiring users: %s" % len(expiringusers))
 
     responses = []
 
@@ -125,7 +138,15 @@ def main():
         for modresponse in responses:
             prettyprintpost(modresponse)
     else:
-        print(json.dumps(responses, indent=2, sort_keys=True, default=str))
+        for modresponse in responses:
+            print(
+                json.dumps(
+                    modresponse.json(),
+                    indent=2,
+                    sort_keys=True,
+                    default=str
+                )
+            )
 
 
 def prettyprintpost(req):
