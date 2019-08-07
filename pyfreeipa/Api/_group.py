@@ -83,21 +83,30 @@ def grouplist(
                 response = self.group(groupname)
                 if response:
                     grouplist.append(groupname)
-                response = self.groups(in_group=groupname)
-                for group in response:
-                    grouplist.append(group['cn'][0])
+                    response = self.groups(in_group=groupname)
+                    if isinstance(response, list):
+                        for group in response:
+                            grouplist.append(group['cn'])
+                    else:
+                        grouplist.append(response['cn'])
         else:
             response = self.group(groupname)
             if response:
                 grouplist.append(groupname)
-            response = self.groups(in_group=groups)
-            for group in response:
-                grouplist.append(group['cn'][0])
+                response = self.groups(in_group=groups)
+                if isinstance(response, list):
+                    for group in response:
+                        grouplist.append(group['cn'])
+                else:
+                    grouplist.append(response['cn'])
     else:
         for group in self.groups():
-            grouplist.append(group['cn'][0])
+            grouplist.append(group['cn'])
 
-    return sorted(set(grouplist))
+    if len(grouplist) > 1:
+        grouplist = sorted(set(grouplist))
+
+    return grouplist
 
 
 def group_show(
