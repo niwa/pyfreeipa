@@ -87,24 +87,24 @@ def userlist(
                 for username in uids:
                     response = self.users(uid=username)
                     for user in response:
-                        userlist.append(user['uid'][0])
+                        userlist.append(user['uid'])
             else:
                 response = self.users(uid=uids)
                 for user in response:
-                    userlist.append(user['uid'][0])
+                    userlist.append(user['uid'])
         if groups:
             if isinstance(groups, list):
                 for groupname in groups:
                     response = self.users(in_group=groupname)
                     for user in response:
-                        userlist.append(user['uid'][0])
+                        userlist.append(user['uid'])
             else:
                 response = self.users(in_group=groups)
                 for user in response:
-                    userlist.append(user['uid'][0])
+                    userlist.append(user['uid'])
     else:
         for user in self.users():
-            userlist.append(user['uid'][0])
+            userlist.append(user['uid'])
 
     return sorted(set(userlist))
 
