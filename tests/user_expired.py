@@ -45,17 +45,19 @@ def main():
 
     today = datetime.date.today()
     margin = datetime.timedelta(days=7)
+    month = datetime.timedelta(days=30)
     inaweek = today + margin
+    lastmonth = today - month
     expiringusers = []
 
     for user in users:
         if 'krbpasswordexpiration' in user:
             expiry = user['krbpasswordexpiration']
             if isinstance(expiry, datetime.datetime):
-                if today <= expiry.date() <= inaweek:
+                if lastmonth <= expiry.date() <= inaweek:
                     expiringusers.append(user['uid'])
 
-    print("Users with passwords expiring this week: %s" % expiringusers)
+    print("Users with passwords expired in the last 30 days, and in the next week: %s" % expiringusers)
 
 
 if __name__ == "__main__":
