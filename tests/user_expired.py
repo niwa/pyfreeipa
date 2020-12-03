@@ -55,9 +55,16 @@ def main():
             expiry = user['krbpasswordexpiration']
             if isinstance(expiry, datetime.datetime):
                 if lastmonth <= expiry.date() <= inaweek:
-                    expiringusers.append(user['uid'])
+                    userhash = {
+                        'name': user['displayname'],
+                        'uid': user['uid'],
+                        'email': user['mail'],
+                        'passwdexpiry': expiry
+                    }
+                    expiringusers.append(userhash)
 
-    print("Users with passwords expired in the last 30 days, and in the next week: %s" % expiringusers)
+    print("Users with passwords expired in the last 30 days, and in the next week:")
+    print(json.dumps(expiringusers, indent=2, sort_keys=True, default=str))
 
 
 if __name__ == "__main__":
