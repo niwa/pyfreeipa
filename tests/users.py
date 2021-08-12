@@ -2,7 +2,6 @@
 A generic wrapper script for the pyfreeipa Api class
 """
 import json
-import pprint
 import sys
 from pyfreeipa.Api import Api
 from pyfreeipa.configuration import CONFIG
@@ -14,7 +13,6 @@ def main():
 
     @return     { description_of_the_return_value }
     """
-    pp = pprint.PrettyPrinter(indent=2)
 
     if CONFIG['command'] == 'dumpconfig':
         print(json.dumps(CONFIG, indent=2, sort_keys=True))
@@ -44,7 +42,7 @@ def main():
     else:
         users = ipaapi.users()
 
-    pp.pprint(users)
+    print(json.dumps(users, indent=4, sort_keys=True))
 
 if __name__ == "__main__":
     main()
