@@ -2,7 +2,7 @@
 Methods for groups
 """
 from typing import Union
-from ._utils import delist, listdelist
+from pyfreeipa.Api._utils import delist, listdelist
 
 
 def group(

@@ -3,7 +3,7 @@ Methods for users
 """
 from datetime import datetime
 from typing import Union
-from ._utils import delist, listdelist
+from pyfreeipa.Api._utils import delist, listdelist
 
 def user(
         self,

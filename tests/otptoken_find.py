@@ -46,7 +46,7 @@ def main():
     print(json.dumps(response.json(), indent=2, sort_keys=True))
 
     print("Response as a list object:")
-    print(json.dumps(tokens, indent=2, sort_keys=True, default=str)
+    print(json.dumps(tokens, indent=2, sort_keys=True, default=str))
 
 
 if __name__ == "__main__":
