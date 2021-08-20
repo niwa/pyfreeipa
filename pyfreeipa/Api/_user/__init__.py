@@ -440,18 +440,19 @@ def user_mod(
     # this might fail if the strings end up too long
     self.user_mod(
         uid,
-        givenname=caseparams['givenname'],
-        cn=caseparams['cn'],
-        displayname=caseparams['displayname'],
-        initials=caseparams['initials'],
-        homedirectory=caseparams['homedirectory'],
-        gecos=caseparams['gecos'],
-        mail=caseparams['mail'],
-        title=caseparams['title'],
-        manager=caseparams['manager'],
-        departmentnumber=caseparams['departmentnumber'],
-        employeetype=caseparams['employeetype'],
-        preferredlanguage=caseparams['preferredlanguage']
+        # Need to default to None if not defined!
+        givenname=caseparams.get('givenname'),
+        cn=caseparams.get('cn'),
+        displayname=caseparams.get('displayname'),
+        initials=caseparams.get('initials'),
+        homedirectory=caseparams.get('homedirectory'),
+        gecos=caseparams.get('gecos'),
+        mail=caseparams.get('mail'),
+        title=caseparams.get('title'),
+        manager=caseparams.get('manager'),
+        departmentnumber=caseparams.get('departmentnumber'),
+        employeetype=caseparams.get('employeetype'),
+        preferredlanguage=caseparams.get('preferredlanguage')
     )
 
     # This is a write method so, prepare the request
