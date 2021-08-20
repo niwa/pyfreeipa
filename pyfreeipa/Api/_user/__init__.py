@@ -281,122 +281,187 @@ def user_mod(
 
     args = uid
 
+    caseparams = {}
+
     params = {}
 
-    if givenname is not None:
-        params['givenname'] = givenname
+    currentuser = self.user(uid)
 
-    if sn is not None:
-        params['sn'] = sn
+    # If there is no current user then these tests will break,
+    # and the proposed actions are pointless so...
+    if currentuser:
 
-    if cn is not None:
-        params['cn'] = cn
+        # Case insensitive!
+        if givenname is not None:
+            params['givenname'] = givenname
+            if givenname.lower() == currentuser['givenname'].lower():
+                caseparams['givenname'] = "%s_case" % currentuser['givenname']
 
-    if displayname is not None:
-        params['displayname'] = displayname
+        if sn is not None:
+            params['sn'] = sn
 
-    if initials is not None:
-        params['initials'] = initials
+        # Case insensitive!
+        if cn is not None:
+            params['cn'] = cn
+            if cn.lower() == currentuser['cn'].lower():
+                caseparams['cn'] = "%s_case" % currentuser['cn']
 
-    if homedirectory is not None:
-        params['homedirectory'] = homedirectory
+        # Case insensitive!
+        if displayname is not None:
+            params['displayname'] = displayname
+            if displayname.lower() == currentuser['displayname'].lower():
+                caseparams['displayname'] = "%s_case" % currentuser['displayname']
 
-    if gecos is not None:
-        params['gecos'] = gecos
+        # Case insensitive! Should be .upper
+        if initials is not None:
+            params['initials'] = initials
+            if initials.lower() == currentuser['initials'].lower():
+                caseparams['initials'] = "%s_case" % currentuser['initials']
 
-    if loginshell is not None:
-        params['loginshell'] = loginshell
+        # Case insensitive!
+        if homedirectory is not None:
+            params['homedirectory'] = homedirectory
+            if homedirectory.lower() == currentuser['homedireif homedirectory'].lower():
+                caseparams['homedireif homedirectory'] = "%s_case" % currentuser['homedireif homedirectory']
 
-    if krbprincipalname is not None:
-        params['krbprincipalname'] = krbprincipalname
+        # Case insensitive!
+        if gecos is not None:
+            params['gecos'] = gecos
+            if gecos.lower() == currentuser['gecos'].lower():
+                caseparams['gecos'] = "%s_case" % currentuser['gecos']
 
-    if krbprincipalexpiration is not None:
-        params['krbprincipalexpiration'] = krbprincipalexpiration.strftime("%Y%m%d%H%M%SZ")
+        if loginshell is not None:
+            params['loginshell'] = loginshell
 
-    if krbpasswordexpiration is not None:
-        params['krbpasswordexpiration'] = krbpasswordexpiration.strftime("%Y%m%d%H%M%SZ")
+        if krbprincipalname is not None:
+            params['krbprincipalname'] = krbprincipalname
 
-    if mail is not None:
-        params['mail'] = mail
+        if krbprincipalexpiration is not None:
+            params['krbprincipalexpiration'] = krbprincipalexpiration.strftime("%Y%m%d%H%M%SZ")
 
-    if userpassword is not None:
-        params['userpassword'] = userpassword
+        if krbpasswordexpiration is not None:
+            params['krbpasswordexpiration'] = krbpasswordexpiration.strftime("%Y%m%d%H%M%SZ")
 
-    if random is not None:
-        params['random'] = random
+        # Case insensitive!
+        if mail is not None:
+            params['mail'] = mail
+            if mail.lower() == currentuser['mail'].lower():
+                caseparams['mail'] = "%s_case" % currentuser['mail']
 
-    if uidnumber is not None:
-        params['uidnumber'] = uidnumber
+        if userpassword is not None:
+            params['userpassword'] = userpassword
 
-    if gidnumber is not None:
-        params['gidnumber'] = gidnumber
+        if random is not None:
+            params['random'] = random
 
-    if telephonenumber is not None:
-        params['telephonenumber'] = telephonenumber
+        if uidnumber is not None:
+            params['uidnumber'] = uidnumber
 
-    if mobile is not None:
-        params['mobile'] = mobile
+        if gidnumber is not None:
+            params['gidnumber'] = gidnumber
 
-    if ou is not None:
-        params['ou'] = ou
+        if telephonenumber is not None:
+            params['telephonenumber'] = telephonenumber
 
-    if title is not None:
-        params['title'] = title
+        if mobile is not None:
+            params['mobile'] = mobile
 
-    if manager is not None:
-        params['manager'] = manager
+        if ou is not None:
+            params['ou'] = ou
 
-    if carlicense is not None:
-        params['carlicense'] = carlicense
+        # Case insensitive!
+        if title is not None:
+            params['title'] = title
+            if title.lower() == currentuser['title'].lower():
+                caseparams['title'] = "%s_case" % currentuser['title']
 
-    if ipasshpubkey is not None:
-        params['ipasshpubkey'] = ipasshpubkey
+        # Case insensitive!
+        if manager is not None:
+            params['manager'] = manager
+            if manager.lower() == currentuser['manager'].lower():
+                caseparams['manager'] = "%s_case" % currentuser['manager']
 
-    if ipauserauthtype is not None:
-        params['ipauserauthtype'] = ipauserauthtype
+        if carlicense is not None:
+            params['carlicense'] = carlicense
 
-    if userclass is not None:
-        params['userclass'] = userclass
+        if ipasshpubkey is not None:
+            params['ipasshpubkey'] = ipasshpubkey
 
-    if ipatokenradiusconfiglink is not None:
-        params['ipatokenradiusconfiglink'] = ipatokenradiusconfiglink
+        if ipauserauthtype is not None:
+            params['ipauserauthtype'] = ipauserauthtype
 
-    if ipatokenradiususername is not None:
-        params['ipatokenradiususername'] = ipatokenradiususername
+        if userclass is not None:
+            params['userclass'] = userclass
 
-    if departmentnumber is not None:
-        params['departmentnumber'] = departmentnumber
+        if ipatokenradiusconfiglink is not None:
+            params['ipatokenradiusconfiglink'] = ipatokenradiusconfiglink
 
-    if employeenumber is not None:
-        params['employeenumber'] = employeenumber
+        if ipatokenradiususername is not None:
+            params['ipatokenradiususername'] = ipatokenradiususername
 
-    if employeetype is not None:
-        params['employeetype'] = employeetype
+        # Case insensitive!
+        if departmentnumber is not None:
+            params['departmentnumber'] = departmentnumber
+            if departmentnumber.lower() == currentuser['departmentnumber'].lower():
+                caseparams['departmentnumber'] = "%s_case" % currentuser['departmentnumber']
 
-    if preferredlanguage is not None:
-        params['preferredlanguage'] = preferredlanguage
+        if employeenumber is not None:
+            params['employeenumber'] = employeenumber
 
-    if nsaccountlock is not None:
-        params['nsaccountlock'] = nsaccountlock
+        # Case insensitive!
+        if employeetype is not None:
+            params['employeetype'] = employeetype
+            if employeetype.lower() == currentuser['employeetype'].lower():
+                caseparams['employeetype'] = "%s_case" % currentuser['employeetype']
 
-    if no_members is not None:
-        params['no_members'] = no_members
+        # Case insensitive!
+        if preferredlanguage is not None:
+            params['preferredlanguage'] = preferredlanguage
+            if preferredlanguage.lower() == currentuser['prefeif preferredlanguage'].lower():
+                caseparams['prefeif preferredlanguage'] = "%s_case" % currentuser['prefeif preferredlanguage']
 
-    if rename is not None:
-        params['rename'] = rename
+        if nsaccountlock is not None:
+            params['nsaccountlock'] = nsaccountlock
 
-    if allattrs is not None:
-        params['all'] = allattrs
+        if no_members is not None:
+            params['no_members'] = no_members
 
-    if raw is not None:
-        params['raw'] = raw
+        if rename is not None:
+            params['rename'] = rename
 
+        if allattrs is not None:
+            params['all'] = allattrs
+
+        if raw is not None:
+            params['raw'] = raw
+
+    # If theres a case issue detected, do another user_mod to
+    # set the case insenistive values to a dummy value
+    # this might fail if the strings end up too long
+    self.user_mod(
+        uid,
+        givenname=caseparams['givenname'],
+        cn=caseparams['cn'],
+        displayname=caseparams['displayname'],
+        initials=caseparams['initials'],
+        homedirectory=caseparams['homedirectory'],
+        gecos=caseparams['gecos'],
+        mail=caseparams['mail'],
+        title=caseparams['title'],
+        manager=caseparams['manager'],
+        departmentnumber=caseparams['departmentnumber'],
+        employeetype=caseparams['employeetype'],
+        preferredlanguage=caseparams['preferredlanguage']
+    )
+
+    # This is a write method so, prepare the request
     prepared = self.preprequest(
         method,
         args=args,
         params=params
     )
 
+    # then check if it's a dryrun before executing it
     if not self._dryrun:
         response = self._session.send(prepared)
     else:
