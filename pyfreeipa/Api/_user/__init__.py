@@ -295,40 +295,42 @@ def user_mod(
         if givenname is not None:
             params['givenname'] = givenname
             if givenname.lower() == currentuser['givenname'].lower():
-                caseparams['givenname'] = "%s_case" % currentuser['givenname']
+                caseparams['givenname'] = "case_%s" % currentuser['givenname']
 
         if sn is not None:
             params['sn'] = sn
+            if sn.lower() == currentuser['sn'].lower():
+                caseparams['sn'] = "case_%s" % currentuser['sn']
 
         # Case insensitive!
         if cn is not None:
             params['cn'] = cn
             if cn.lower() == currentuser['cn'].lower():
-                caseparams['cn'] = "%s_case" % currentuser['cn']
+                caseparams['cn'] = "case_%s" % currentuser['cn']
 
         # Case insensitive!
         if displayname is not None:
             params['displayname'] = displayname
             if displayname.lower() == currentuser['displayname'].lower():
-                caseparams['displayname'] = "%s_case" % currentuser['displayname']
+                caseparams['displayname'] = "case_%s" % currentuser['displayname']
 
         # Case insensitive! Should be .upper
         if initials is not None:
             params['initials'] = initials
             if initials.lower() == currentuser['initials'].lower():
-                caseparams['initials'] = "%s_case" % currentuser['initials']
+                caseparams['initials'] = "case_%s" % currentuser['initials']
 
         # Case insensitive!
         if homedirectory is not None:
             params['homedirectory'] = homedirectory
-            if homedirectory.lower() == currentuser['homedireif homedirectory'].lower():
-                caseparams['homedireif homedirectory'] = "%s_case" % currentuser['homedireif homedirectory']
+            if homedirectory.lower() == currentuser['homedirectory'].lower():
+                caseparams['homedirectory'] = "case_%s" % currentuser['homedirectory']
 
         # Case insensitive!
         if gecos is not None:
             params['gecos'] = gecos
             if gecos.lower() == currentuser['gecos'].lower():
-                caseparams['gecos'] = "%s_case" % currentuser['gecos']
+                caseparams['gecos'] = "case_%s" % currentuser['gecos']
 
         if loginshell is not None:
             params['loginshell'] = loginshell
@@ -346,7 +348,7 @@ def user_mod(
         if mail is not None:
             params['mail'] = mail
             if mail.lower() == currentuser['mail'].lower():
-                caseparams['mail'] = "%s_case" % currentuser['mail']
+                caseparams['mail'] = "case_%s" % currentuser['mail']
 
         if userpassword is not None:
             params['userpassword'] = userpassword
@@ -373,13 +375,13 @@ def user_mod(
         if title is not None:
             params['title'] = title
             if title.lower() == currentuser['title'].lower():
-                caseparams['title'] = "%s_case" % currentuser['title']
+                caseparams['title'] = "case_%s" % currentuser['title']
 
         # Case insensitive!
         if manager is not None:
             params['manager'] = manager
             if manager.lower() == currentuser['manager'].lower():
-                caseparams['manager'] = "%s_case" % currentuser['manager']
+                caseparams['manager'] = "case_%s" % currentuser['manager']
 
         if carlicense is not None:
             params['carlicense'] = carlicense
@@ -403,7 +405,7 @@ def user_mod(
         if departmentnumber is not None:
             params['departmentnumber'] = departmentnumber
             if departmentnumber.lower() == currentuser['departmentnumber'].lower():
-                caseparams['departmentnumber'] = "%s_case" % currentuser['departmentnumber']
+                caseparams['departmentnumber'] = "case_%s" % currentuser['departmentnumber']
 
         if employeenumber is not None:
             params['employeenumber'] = employeenumber
@@ -412,13 +414,13 @@ def user_mod(
         if employeetype is not None:
             params['employeetype'] = employeetype
             if employeetype.lower() == currentuser['employeetype'].lower():
-                caseparams['employeetype'] = "%s_case" % currentuser['employeetype']
+                caseparams['employeetype'] = "case_%s" % currentuser['employeetype']
 
         # Case insensitive!
         if preferredlanguage is not None:
             params['preferredlanguage'] = preferredlanguage
             if preferredlanguage.lower() == currentuser['prefeif preferredlanguage'].lower():
-                caseparams['prefeif preferredlanguage'] = "%s_case" % currentuser['prefeif preferredlanguage']
+                caseparams['prefeif preferredlanguage'] = "case_%s" % currentuser['prefeif preferredlanguage']
 
         if nsaccountlock is not None:
             params['nsaccountlock'] = nsaccountlock
@@ -438,22 +440,23 @@ def user_mod(
     # If theres a case issue detected, do another user_mod to
     # set the case insenistive values to a dummy value
     # this might fail if the strings end up too long
-    self.user_mod(
-        uid,
-        # Need to default to None if not defined!
-        givenname=caseparams.get('givenname'),
-        cn=caseparams.get('cn'),
-        displayname=caseparams.get('displayname'),
-        initials=caseparams.get('initials'),
-        homedirectory=caseparams.get('homedirectory'),
-        gecos=caseparams.get('gecos'),
-        mail=caseparams.get('mail'),
-        title=caseparams.get('title'),
-        manager=caseparams.get('manager'),
-        departmentnumber=caseparams.get('departmentnumber'),
-        employeetype=caseparams.get('employeetype'),
-        preferredlanguage=caseparams.get('preferredlanguage')
-    )
+    if caseparams:
+        self.user_mod(
+            uid,
+            # Need to default to None if not defined!
+            givenname=caseparams.get('givenname'),
+            cn=caseparams.get('cn'),
+            displayname=caseparams.get('displayname'),
+            initials=caseparams.get('initials'),
+            homedirectory=caseparams.get('homedirectory'),
+            gecos=caseparams.get('gecos'),
+            mail=caseparams.get('mail'),
+            title=caseparams.get('title'),
+            manager=caseparams.get('manager'),
+            departmentnumber=caseparams.get('departmentnumber'),
+            employeetype=caseparams.get('employeetype'),
+            preferredlanguage=caseparams.get('preferredlanguage')
+        )
 
     # This is a write method so, prepare the request
     prepared = self.preprequest(
