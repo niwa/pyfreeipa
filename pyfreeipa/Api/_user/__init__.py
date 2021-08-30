@@ -274,7 +274,10 @@ def user_mod(
         no_members: Union[bool, None]=None,
         rename: Union[str, None]=None,
         allattrs: Union[bool, None]=None,
-        raw: Union[bool, None]=None
+        raw: Union[bool, None]=None,
+        addattr: Union[dict, None]=None,
+        setattr: Union[dict, None]=None,
+        delattr: Union[dict, None]=None
 ):
 
     method = 'user_mod'
@@ -436,6 +439,67 @@ def user_mod(
 
         if raw is not None:
             params['raw'] = raw
+
+        # Use addattr, setattr and delatter to modify custom variables
+        if setattr is not None:
+            for key, value in setattr.items():
+                if params.get('setattr'):
+                    params['setattr'].append(
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    )
+                else:
+                    params['setattr']=[
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    ]
+                # Check for case insensitivity
+                if currentuser.get(key):
+                    if currentuser[key].lower() == value.lower():
+                        if caseparams.get('setattr'):
+                            caseparams['setattr'][key] = value
+                        else:
+                            caseparams['setattr']={
+                                key: value
+                            }
+
+        if addattr is not None:
+            for key, value in addattr.items():
+                if params.get('addattr'):
+                    params['addattr'].append(
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    )
+                else:
+                    params['addattr']=[
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    ]
+
+        if delattr is not None:
+            for key, value in delattr.items():
+                if params.get('delattr'):
+                    params['delattr'].append(
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    )
+                else:
+                    params['delattr']=[
+                        "%s=%s" % (
+                            key,
+                            value
+                        )
+                    ]
 
     # If theres a case issue detected, do another user_mod to
     # set the case insenistive values to a dummy value
