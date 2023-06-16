@@ -75,6 +75,7 @@ ignore/
 # ignore dumps and logs
 log/
 dumps/
+ignore/
 
 # ignore certificates
 *.pem
