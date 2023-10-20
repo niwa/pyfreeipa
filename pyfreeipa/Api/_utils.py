@@ -1,9 +1,11 @@
 """
 Some common utilities for the API
 """
+import requests
+import json
 from datetime import datetime
 from typing import List
-import requests
+
 
 
 def delist(
