@@ -101,11 +101,21 @@ This function checks and verifies it's argments and converts regular string, dic
 
 This function checks and verifies it's argments and converts regular string, dictionary, and list objects and converts them into the required data types to submit as a request, executes the request and returns a `requests.PreparedRequest` object.
 
+The use of `preprequest()` and `send()` methods allow a `POST` request to be prepared, then it can be examined or checked, and then if it's valid the `send()` method can execute it. Another use case is a 'dry run' scenario where the request can be prepared, but not executed.
+
 ### Parameters
 
 * `method` A the IPA API method to be called
 * `args` A list of arguments for the method
 * `params` A dictionary of parameters for the method
+
+## `send()`
+
+This function sends a prepared request from the `preprequest()` function and sends it to be executed and returns a `requests.Response` object.
+
+### Parameters
+
+* `preprequest` A `requests.PreparedRequest` object, as per what's produced by `preprequest()`
 
 ## `warnings`
 
