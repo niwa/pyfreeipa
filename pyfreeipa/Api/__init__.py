@@ -317,7 +317,7 @@ class Api:
             )
         else:
             response = {
-                'dryrun': true
+                'dryrun': True
             }
 
         return response
@@ -338,7 +338,7 @@ class Api:
             )
         else:
             response = {
-                'dryrun': true
+                'dryrun': True
             }
 
         return response
