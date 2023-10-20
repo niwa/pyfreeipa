@@ -6,6 +6,7 @@ from typing import Union
 from datetime import datetime
 import requests
 import urllib3
+from ._utils import jsonprepreq
 
 
 class Api:
@@ -127,34 +128,6 @@ class Api:
         @brief This exposes a raw get method for the session
         """
         response = self._session.get(
-            *dargs,
-            **kwargs
-        )
-        return response
-
-    def post(
-            self,
-            *dargs,
-            **kwargs
-    ):
-        """
-        @brief This exposes a raw post method for the internal session
-        """
-        response = self._session.post(
-            *dargs,
-            **kwargs
-        )
-        return response
-
-    def put(
-            self,
-            *dargs,
-            **kwargs
-    ):
-        """
-        @brief This exposes a raw put method for the internal session
-        """
-        response = self._session.put(
             *dargs,
             **kwargs
         )
@@ -309,3 +282,51 @@ class Api:
         @return     the requests.Response from the whoami request
         """
         return self.request('whoami')
+
+## WRITE METHODS: Methods beyond this point can update spectrumscale
+## these methods MUST make no changes if self._dryrun is True
+##
+
+## Sends a prepared request
+    def send(
+        self,
+        preprequest: type=requests.PreparedRequest
+    ):
+        response = None
+        if self._dryrun:
+            response = jsonprepreq(preprequest)
+            response['dryrun'] = True
+        else:
+            response = self._session.send(preprequest)
+
+        return response
+
+## POST a request directly
+    def post(
+            self,
+            *dargs,
+            **kwargs
+    ):
+        """
+        @brief This exposes a raw post method for the internal session
+        """
+        response = self._session.post(
+            *dargs,
+            **kwargs
+        )
+        return response
+
+# PUT a request directly
+    def put(
+            self,
+            *dargs,
+            **kwargs
+    ):
+        """
+        @brief This exposes a raw put method for the internal session
+        """
+        response = self._session.put(
+            *dargs,
+            **kwargs
+        )
+        return response
