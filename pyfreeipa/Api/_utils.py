@@ -3,6 +3,7 @@ Some common utilities for the API
 """
 from datetime import datetime
 from typing import List
+import requests
 
 
 def delist(
