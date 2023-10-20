@@ -310,15 +310,11 @@ class Api:
         """
         @brief This exposes a raw post method for the internal session
         """
-        if not self._dryrun:
-            response = self._session.post(
-                *dargs,
-                **kwargs
-            )
-        else:
-            response = {
-                'dryrun': True
-            }
+
+        response = self._session.post(
+            *dargs,
+            **kwargs
+        )
 
         return response
 
@@ -331,14 +327,10 @@ class Api:
         """
         @brief This exposes a raw put method for the internal session
         """
-        if not self._dryrun:
-            response = self._session.put(
-                *dargs,
-                **kwargs
-            )
-        else:
-            response = {
-                'dryrun': True
-            }
+
+        response = self._session.put(
+            *dargs,
+            **kwargs
+        )
 
         return response
