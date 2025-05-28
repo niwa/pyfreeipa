@@ -7,7 +7,7 @@ Install module
 import setuptools
 
 setuptools.setup(
-    name="PyFreeIPA",
+    name="pyfreeipa",
     description="Python FreeIPA API interface",
     author="Aaron Hicks",
     author_email="aethylred@gmail.com",
