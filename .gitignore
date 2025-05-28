@@ -59,6 +59,7 @@ target/
 .venv
 venv/
 ENV/
+venvs
 
 # Exclude logs
 *.log
