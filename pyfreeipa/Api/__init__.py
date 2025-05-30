@@ -21,7 +21,8 @@ class Api:
         users,
         userlist,
         user_getattr,
-        user_mod
+        user_mod,
+        user_add
     )
     from ._group import (
         group_show,
