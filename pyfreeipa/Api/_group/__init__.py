@@ -302,7 +302,7 @@ def group_add_member(
     ipexternalmember: Union[str, list, None]=None,
     no_members: Union[bool, None]=None,
     user: Union[str, list, None]=None,
-    groupnames: Union[str, list, None]=None, # Using groupnames instead of group to stop redefining from outer scope
+    group: Union[str, list, None]=None,
     service: Union[str, list, None]=None,
     idoverriduser: Union[str, list, None]=None,
     raw: Union[bool, None]=None,
@@ -323,8 +323,8 @@ def group_add_member(
     if user is not None:
         params['user'] = user
     
-    if groupnames is not None:
-        params['group'] = groupnames
+    if group is not None:
+        params['group'] = group
     
     if service is not None:
         params['service'] = service
