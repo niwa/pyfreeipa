@@ -29,7 +29,8 @@ class Api:
         group_find,
         group,
         groups,
-        grouplist
+        grouplist,
+        group_add_member
     )
     from ._otptoken import (
         otptoken_find,
