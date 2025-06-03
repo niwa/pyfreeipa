@@ -292,3 +292,63 @@ def group_find(
         args=args,
         params=params
     )
+
+# Write methods that may cause changes to the directory
+# These methods MUST require dryrun to be false to write changes
+
+def group_add_member(
+    self,
+    cn: str,
+    ipexternalmember: Union[str, list, None]=None,
+    no_members: Union[bool, None]=None,
+    user: Union[str, list, None]=None,
+    group: Union[str, list, None]=None,
+    service: Union[str, list, None]=None,
+    idoverriduser: Union[str, list, None]=None,
+    raw: Union[bool, None]=None,
+    version:Union[bool, None]=None
+):
+    method = 'group_add_member'
+
+    args = cn
+
+    params = {}
+
+    if ipexternalmember is not None:
+        params['ipexternalmember'] = ipexternalmember
+
+    if no_members is not None:
+        params['no_members'] = no_members
+    
+    if user is not None:
+        params['user'] = user
+    
+    if group is not None:
+        params['group'] = group
+    
+    if service is not None:
+        params['service'] = service
+    
+    if idoverriduser is not None:
+        params['idoverriduser'] = idoverriduser
+
+    if raw is not None:
+        params['raw'] = raw
+
+    if version is not None:
+        params['version'] = version
+
+    # This is a write method so, prepare the request
+    prepared = self.preprequest(
+        method,
+        args=args,
+        params=params
+    )
+
+    # then check if it's a dryrun before executing it
+    if not self._dryrun:
+        response = self._session.send(prepared)
+    else:
+        response = prepared
+
+    return response

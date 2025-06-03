@@ -21,14 +21,16 @@ class Api:
         users,
         userlist,
         user_getattr,
-        user_mod
+        user_mod,
+        user_add
     )
     from ._group import (
         group_show,
         group_find,
         group,
         groups,
-        grouplist
+        grouplist,
+        group_add_member
     )
     from ._otptoken import (
         otptoken_find,
