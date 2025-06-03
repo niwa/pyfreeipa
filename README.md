@@ -67,6 +67,29 @@ ipaapi.request(
 
 ## Implemented Methods
 
+The API methods implemented is incomplete as we're only adding them as we need them, each of these methdos includes some sanity checking, doing case insensitivity checks where necessary, and cleaning up the output so it's predictably formatted.
+
+- `user_show`
+- `user_find`
+- `user`
+- `users`
+- `userlist`
+- `user_getattr`
+- `user_mod`
+- `user_add`
+- `group_find`
+- `group`
+- `groups`
+- `grouplist`
+- `group_add_member`
+- `otptoken_find`
+- `otptoken_show`
+- `otptoken`
+- `otptokens`
+- `otptoken_remove_managedby`
+- `otptoken_add_managedby`
+- `otptoken_add`
+
 # Other Methods
 
 The `Api` object has a some methods that do not directly relate to requests to the IPA API
