@@ -634,7 +634,8 @@ def user_add(
         params['mail'] = mail
 
     if userpassword is not None:
-        params['userpassword'] = userpassword
+        if userpassword: # skip if empty string or false
+            params['userpassword'] = userpassword
 
     if random is not None:
         params['random'] = random
