@@ -777,3 +777,29 @@ def user_add(
         response = prepared
 
     return response
+
+
+def user_disable(
+    self,
+    # Arguments
+    uid: type=str
+):
+    # This is a basic method, but we wrap it anyway to handle a dryrun
+    method = 'user_disable'
+
+    args = uid
+
+
+    # This is a write method so, prepare the request
+    prepared = self.preprequest(
+        method,
+        args=args
+    )
+
+    # then check if it's a dryrun before executing it
+    if not self._dryrun:
+        response = self._session.send(prepared)
+    else:
+        response = prepared
+
+    return response
