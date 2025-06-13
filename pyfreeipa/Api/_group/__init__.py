@@ -319,16 +319,16 @@ def group_add_member(
 
     if no_members is not None:
         params['no_members'] = no_members
-    
+  
     if user is not None:
         params['user'] = user
-    
+  
     if group is not None:
         params['group'] = group
-    
+ 
     if service is not None:
         params['service'] = service
-    
+ 
     if idoverriduser is not None:
         params['idoverriduser'] = idoverriduser
 
@@ -337,6 +337,101 @@ def group_add_member(
 
     if version is not None:
         params['version'] = version
+
+    # This is a write method so, prepare the request
+    prepared = self.preprequest(
+        method,
+        args=args,
+        params=params
+    )
+
+    # then check if it's a dryrun before executing it
+    if not self._dryrun:
+        response = self._session.send(prepared)
+    else:
+        response = prepared
+
+    return response
+
+
+def group_add(
+    self,
+    cn: str,
+    gidnumber: Union[int, None]=None,
+    description: Union[str, None]=None,
+    no_members: Union[bool, None]=None,
+    nonposix: Union[bool, None]=None,
+    external: Union[bool, None]=None,
+    setattr: Union[str, list, None]=None,
+    addattr: Union[str, list, None]=None,
+    raw: Union[bool, None]=None,
+    version:Union[bool, None]=None
+):
+    method = 'group_add'
+
+    args = cn
+
+    params = {}
+
+    # Case insensitive!
+    if cn is not None:
+        params['cn'] = cn
+
+    if gidnumber is not None:
+        params['gidnumber'] = gidnumber
+
+    # Case insensitive!
+    if description is not None:
+        params['description'] = description
+
+    if no_members is not None:
+        params['no_members'] = no_members\  
+    if nonposix is not None:
+        params['nonposix'] = nonposix
+  
+    if external is not None:
+        params['external'] = external
+
+    if raw is not None:
+        params['raw'] = raw
+
+    if version is not None:
+        params['version'] = version
+
+    # Use addattr & setattr to modify custom variables
+    if setattr is not None:
+        for key, value in setattr.items():
+            if params.get('setattr'):
+                params['setattr'].append(
+                    "%s=%s" % (
+                        key,
+                        value
+                    )
+                )
+            else:
+                params['setattr']=[
+                    "%s=%s" % (
+                        key,
+                        value
+                    )
+                ]
+
+    if addattr is not None:
+        for key, value in addattr.items():
+            if params.get('addattr'):
+                params['addattr'].append(
+                    "%s=%s" % (
+                        key,
+                        value
+                    )
+                )
+            else:
+                params['addattr']=[
+                    "%s=%s" % (
+                        key,
+                        value
+                    )
+                ]
 
     # This is a write method so, prepare the request
     prepared = self.preprequest(
