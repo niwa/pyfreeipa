@@ -11,7 +11,7 @@ setuptools.setup(
     description="Python FreeIPA API interface",
     author="Aaron Hicks",
     author_email="aethylred@gmail.com",
-    version="0.2.4",
+    version="0.2.5",
     packages=setuptools.find_packages(),
     license='Apache 2.0',
     long_description=open('README.md').read(),
