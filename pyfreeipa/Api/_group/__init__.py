@@ -373,10 +373,6 @@ def group_add(
 
     params = {}
 
-    # Case insensitive!
-    if cn is not None:
-        params['cn'] = cn
-
     if gidnumber is not None:
         params['gidnumber'] = gidnumber
 
