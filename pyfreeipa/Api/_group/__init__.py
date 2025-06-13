@@ -385,10 +385,10 @@ def group_add(
         params['description'] = description
 
     if no_members is not None:
-        params['no_members'] = no_members\  
+        params['no_members'] = no_members
     if nonposix is not None:
         params['nonposix'] = nonposix
-  
+
     if external is not None:
         params['external'] = external
 
